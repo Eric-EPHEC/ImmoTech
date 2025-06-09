@@ -1,0 +1,84 @@
+@startuml
+class User {
+  +id: int
+  +name: string
+  +email: string
+  +passwordHash: string
+  +role: UserRole
+  +registerDate: DateTime
+  +editProfile()
+}
+
+class ProfessionalUser {
+  +agencyId: int
+  +accessAnalytics()
+}
+
+class Property {
+  +id: uuid
+  +title: string
+  +description: string
+  +adress: Adress
+  +location: string
+  +price: float
+  +status: PropertyStatus
+  +createdDate: DateTime
+  +agencyId: int
+}
+
+class SearchCriteria {
+  +id: int
+  +keywords: string
+  +minPrice: float
+  +maxPrice: float
+  +location: string
+}
+
+class Photo {
+  +id: int
+  +url: string
+  +uploadedAt: DateTime
+}
+
+class Notification {
+  +id: int
+  +message: string
+  +sentAt: DateTime
+  +isRead: boolean
+}
+
+class ModerationLog {
+  +id: int
+  +propertyId: int
+  +moderatorId: int
+  +action: string
+  +timestamp: DateTime
+}
+
+class Agency {
+  +id: int
+  +name: string
+  +address: Adress
+  +contactEmail: string
+}
+
+class Address{
+  +street: string
+  +city: string
+  +state: string
+  +zipCode: string
+}
+
+User <|-- ProfessionalUser
+User --> "*" Property : posts
+User --> "*" SearchCriteria : saves
+User --> "*" Notification : receives
+Property --> "*" Photo : contains
+Admin --> "*" ModerationLog : records
+ModerationLog --> "*" Property : linkedTo
+Property --> "*" Adress: has
+Agency --> "*" Property : owns
+Agency --> "*" Address : has
+Agency --> "*" ProfessionalUser : employs
+
+@enduml
