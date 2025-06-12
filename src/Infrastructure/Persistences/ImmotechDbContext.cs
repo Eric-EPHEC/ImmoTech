@@ -5,12 +5,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistences
 {
-    public class ImmotechDbContext(DbContextOptions options) : IdentityDbContext<IdentityUser>(options)
+    public class ImmotechDbContext(DbContextOptions options) : IdentityDbContext<User, IdentityRole<Guid>, Guid>(options)
     {
         public DbSet<Property> Properties { get; set; }
         public DbSet<Agency> Agencies { get; set; }
         public DbSet<ProfessionalUser> ProfessionalUsers { get; set; }
-        public DbSet<Address> Addresses { get; set; }
         public DbSet<Photo> Photos { get; set; }
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<ModerationLog> ModerationLogs { get; set; }
@@ -26,6 +25,14 @@ namespace Infrastructure.Persistences
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Name).IsRequired();
                 entity.Property(e => e.ContactEmail).IsRequired().HasMaxLength(100);
+
+                entity.OwnsOne(e => e.Address, ownedNavigationBuilder =>
+                {
+                    ownedNavigationBuilder.Property(a => a.Street).IsRequired();
+                    ownedNavigationBuilder.Property(a => a.City).IsRequired();
+                    ownedNavigationBuilder.Property(a => a.State).IsRequired();
+                    ownedNavigationBuilder.Property(a => a.ZipCode).IsRequired();
+                });
                 
                 // Relationships
                 entity.HasMany(e => e.Properties)
@@ -47,7 +54,13 @@ namespace Infrastructure.Persistences
                 entity.Property(e => e.Price).HasPrecision(10, 2);
 
                 // Relationships
-                entity.OwnsOne(e => e.Address);
+                entity.OwnsOne(e => e.Address, ownedNavigationBuilder =>
+                {
+                    ownedNavigationBuilder.Property(a => a.Street).IsRequired();
+                    ownedNavigationBuilder.Property(a => a.City).IsRequired();
+                    ownedNavigationBuilder.Property(a => a.State).IsRequired();
+                    ownedNavigationBuilder.Property(a => a.ZipCode).IsRequired();
+                });
                 entity.OwnsMany(e => e.Photos);
 
                 // Indexes
@@ -65,16 +78,6 @@ namespace Infrastructure.Persistences
                     .HasForeignKey(e => e.AgencyId)
                     .OnDelete(DeleteBehavior.Restrict);
             });
-
-            // Address Configuration
-            modelBuilder.Entity<Address>(entity =>
-            {
-                entity.Property(e => e.Street).IsRequired();
-                entity.Property(e => e.City).IsRequired();
-                entity.Property(e => e.State).IsRequired();
-                entity.Property(e => e.ZipCode).IsRequired();
-            });
-
 
             // Notification Configuration
             modelBuilder.Entity<Notification>(entity =>

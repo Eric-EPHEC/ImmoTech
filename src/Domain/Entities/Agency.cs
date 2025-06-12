@@ -8,6 +8,5 @@ public class Agency
     public required string ContactEmail { get; set; }
 
     public ICollection<Property> Properties { get; set; } = [];
-    public ICollection<Address> Addresses { get; set; } = [];
     public ICollection<ProfessionalUser> ProfessionalUsers { get; set; } = [];
 }
