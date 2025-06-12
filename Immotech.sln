@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "src\Infra
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Immotech.Api", "src\Immotech.Api\Immotech.Api.csproj", "{C90D36E3-5A5E-4F90-8219-CEA353BA2AFF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Immotech.Front", "src\Immotech.Front\Immotech.Front.csproj", "{8D6CC600-BB61-4A2C-B020-90550B04E06C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{C90D36E3-5A5E-4F90-8219-CEA353BA2AFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C90D36E3-5A5E-4F90-8219-CEA353BA2AFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C90D36E3-5A5E-4F90-8219-CEA353BA2AFF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D6CC600-BB61-4A2C-B020-90550B04E06C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D6CC600-BB61-4A2C-B020-90550B04E06C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D6CC600-BB61-4A2C-B020-90550B04E06C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D6CC600-BB61-4A2C-B020-90550B04E06C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
