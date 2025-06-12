@@ -1,17 +1,50 @@
 using Domain.Entities;
+using Infrastructure.Persistences;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Queries.Agency
 {
-    public class GetAgencyByIdQuery
+    public class GetAgencyByIdQuery : IRequest<GetAgencyByIdResponse>
     {
         public int Id { get; set; }
     }
 
-    public class AgencyDto
+    public class GetAgencyByIdResponse
     {
         public int Id { get; set; }
         public string Name { get; set; }
         public Address Address { get; set; }
         public string ContactEmail { get; set; }
+    }
+
+    public class GetAgencyByIdQueryHandler : IRequestHandler<GetAgencyByIdQuery, GetAgencyByIdResponse>
+    {
+        private readonly ImmotechDbContext _context;
+
+        public GetAgencyByIdQueryHandler(ImmotechDbContext context)
+        {
+            _context = context;
+        }
+
+        public async Task<GetAgencyByIdResponse> Handle(GetAgencyByIdQuery request, CancellationToken cancellationToken)
+        {
+            var agency = await _context.Agencies
+                .AsNoTracking()
+                .FirstOrDefaultAsync(a => a.Id == request.Id, cancellationToken);
+
+            if (agency == null)
+            {
+                throw new KeyNotFoundException($"Agency with ID {request.Id} not found.");
+            }
+
+            return new GetAgencyByIdResponse
+            {
+                Id = agency.Id,
+                Name = agency.Name,
+                Address = agency.Address,
+                ContactEmail = agency.ContactEmail
+            };
+        }
     }
 } 

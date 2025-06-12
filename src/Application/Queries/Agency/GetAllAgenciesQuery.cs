@@ -10,7 +10,7 @@ namespace Application.Queries.Agency
 
     public class AgencyListDto
     {
-        public List<AgencyDto> Agencies { get; set; }
+        public List<GetAgencyByIdResponse> Agencies { get; set; }
         public int TotalCount { get; set; }
     }
 } 
