@@ -23,8 +23,14 @@ var app = webApplicationBuilder.Build();
 
 if (app.Environment.IsDevelopment())
 {
+    using var scope = app.Services.CreateScope();
+    var dbContext = scope.ServiceProvider.GetRequiredService<ImmotechDbContext>();
+    dbContext.Database.Migrate();
+    
+
     app.UseSwagger();
     app.UseSwaggerUI();
+  
 }
 
 app.UseHttpsRedirection();
