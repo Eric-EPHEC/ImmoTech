@@ -31,20 +31,22 @@ namespace Application.Queries.Agency
         {
             var agency = await _context.Agencies
                 .AsNoTracking()
-                .FirstOrDefaultAsync(a => a.Id == request.Id, cancellationToken);
+                .Where(a => a.Id == request.Id)
+                .Select(a => new GetAgencyByIdResponse
+                {
+                    Id = a.Id,
+                    Name = a.Name,
+                    Address = a.Address,
+                    ContactEmail = a.ContactEmail
+                })
+                .FirstOrDefaultAsync(cancellationToken);
 
             if (agency == null)
             {
                 throw new KeyNotFoundException($"Agency with ID {request.Id} not found.");
             }
 
-            return new GetAgencyByIdResponse
-            {
-                Id = agency.Id,
-                Name = agency.Name,
-                Address = agency.Address,
-                ContactEmail = agency.ContactEmail
-            };
+            return agency;
         }
     }
 } 
