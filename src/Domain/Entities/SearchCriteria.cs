@@ -7,4 +7,5 @@ public class SearchCriteria
     public decimal MinPrice { get; set; }
     public decimal MaxPrice { get; set; }
     public string Location { get; set; } = string.Empty ;
+    public Guid UserId { get; set; }
 }

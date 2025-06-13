@@ -13,6 +13,7 @@ public class Property
     public decimal SurfaceArea { get; set; }
     public DateTimeOffset CreatedDate { get; set; }
     public int? AgencyId { get; set; }
+    public Guid? UserId { get; set; }
 
     // Navigation properties
     public Agency? Agency { get; set; }

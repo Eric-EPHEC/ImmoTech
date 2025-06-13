@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Application.Common;
 
 namespace Infrastructure.Persistences
 {
@@ -53,8 +52,8 @@ namespace Infrastructure.Persistences
                 entity.Property(e => e.Title).IsRequired().HasMaxLength(200);
                 entity.Property(e => e.Description).IsRequired();
                 entity.Property(e => e.Price).HasPrecision(10, 2);
-
-                // Relationships
+                entity.HasQueryFilter(p => p.UserId == currentUser.UserId || p.AgencyId == currentUser.AgencyId);
+                // Relationships with User and Agency.
                 entity.OwnsOne(e => e.Address, ownedNavigationBuilder =>
                 {
                     ownedNavigationBuilder.Property(a => a.Street).IsRequired();
@@ -87,6 +86,7 @@ namespace Infrastructure.Persistences
                 entity.Property(e => e.Message).IsRequired();
                 entity.Property(e => e.IsRead).HasDefaultValue(false);
                 entity.HasIndex(e => e.IsRead);
+                entity.HasQueryFilter(n => n.UserId == currentUser.UserId);
             });
 
             // ModerationLog Configuration
@@ -113,6 +113,7 @@ namespace Infrastructure.Persistences
                 entity.Property(e => e.Location);
                 entity.Property(e => e.MinPrice).HasPrecision(10, 2);
                 entity.Property(e => e.MaxPrice).HasPrecision(10, 2);
+                entity.HasQueryFilter(sc => sc.UserId == currentUser.UserId);
             });
         }
     }
