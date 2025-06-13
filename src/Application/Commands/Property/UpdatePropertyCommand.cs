@@ -15,7 +15,7 @@ public class UpdatePropertyCommand : IRequest<UpdatePropertyResponse>
     public string Location { get; set; } = string.Empty;
     public decimal Price { get; set; }
     public int Bedrooms { get; set; }
-    public decimal SurfaceArea { get; set; }
+    public int SurfaceArea { get; set; }
     public PropertyStatus Status { get; set; }
     public int? AgencyId { get; set; }
 }
