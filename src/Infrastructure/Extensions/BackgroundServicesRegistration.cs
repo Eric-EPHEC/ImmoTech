@@ -1,4 +1,4 @@
-using Application.Abstractions;
+using Application.Common;
 using Infrastructure.BackgroundServices;
 using Infrastructure.Services.Email;
 using Microsoft.Extensions.Configuration;

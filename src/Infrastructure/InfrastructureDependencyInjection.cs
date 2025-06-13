@@ -1,6 +1,7 @@
 using Infrastructure.Persistences;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Infrastructure.Extensions;
 
 namespace Infrastructure
 {
