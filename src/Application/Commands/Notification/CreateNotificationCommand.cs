@@ -26,6 +26,18 @@ public class CreateNotificationCommandHandler : IRequestHandler<CreateNotificati
 
     public async Task<CreateNotificationResponse> Handle(CreateNotificationCommand request, CancellationToken cancellationToken)
     {
+        // validation
+        var hasRecipient = request.RecipientId.HasValue;
+        var hasAgency = request.AgencyId.HasValue;
+        if (hasRecipient == hasAgency)
+        {
+            throw new ArgumentException("A notification must target exactly one of RecipientId or AgencyId.");
+        }
+        if (request.SenderId == Guid.Empty)
+        {
+            throw new ArgumentException("SenderId must be provided.");
+        }
+
         var notification = new Domain.Entities.Notification
         {
             Message = request.Message,
