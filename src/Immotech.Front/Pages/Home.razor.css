@@ -1,0 +1,25 @@
+.hero {
+    min-height: 90vh;
+    background: url('/images/hero-bg.svg') no-repeat bottom center / contain;
+}
+
+.brand {
+    font-weight: 700;
+}
+
+.search-box {
+    max-width: 640px;
+    width: 100%;
+}
+
+.search-icon {
+    position: absolute;
+    top: 50%;
+    right: 1rem;
+    transform: translateY(-50%);
+    color: #6c757d;
+}
+
+.map-link {
+    font-size: .9rem;
+} 
