@@ -1,16 +1,62 @@
 using System.Collections.Generic;
 using Domain.Entities;
+using Infrastructure.Persistences;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Queries.Agency
 {
-    public class GetAllAgenciesQuery
+    public class GetAllAgenciesQuery : IRequest<GetAllAgenciesResponse>
     {
-        // Can add filtering parameters here if needed
+        // Optional search term to filter agencies by name or contact email
+        public string? SearchTerm { get; set; }
     }
 
-    public class AgencyListDto
+    public class GetAllAgenciesResponse
     {
-        public List<GetAgencyByIdResponse> Agencies { get; set; }
+        public List<GetAllAgenciesResponseItem> Agencies { get; set; } = [];
         public int TotalCount { get; set; }
+    }
+
+    public class GetAllAgenciesResponseItem
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public Address Address { get; set; }
+        public string ContactEmail { get; set; }
+    }
+
+    public class GetAllAgenciesQueryHandler : IRequestHandler<GetAllAgenciesQuery, GetAllAgenciesResponse>
+    {
+        private readonly ImmotechDbContext _context;
+
+        public GetAllAgenciesQueryHandler(ImmotechDbContext context)
+        {
+            _context = context;
+        }
+
+        public async Task<GetAllAgenciesResponse> Handle(GetAllAgenciesQuery request, CancellationToken cancellationToken)
+        {
+            var agencies = _context.Agencies.AsNoTracking();
+
+            if (!string.IsNullOrWhiteSpace(request.SearchTerm))
+            {
+                agencies = agencies.Where(a => a.Name.Contains(request.SearchTerm) || a.ContactEmail.Contains(request.SearchTerm));
+            }
+
+            var agencyList = await agencies.Select(a => new GetAllAgenciesResponseItem
+            {
+                Id = a.Id,
+                Name = a.Name,
+                Address = a.Address,
+                ContactEmail = a.ContactEmail,
+            }).ToListAsync(cancellationToken);
+
+            return new GetAllAgenciesResponse
+            {
+                Agencies = agencyList,
+                TotalCount = agencyList.Count
+            };
+        }
     }
 } 
