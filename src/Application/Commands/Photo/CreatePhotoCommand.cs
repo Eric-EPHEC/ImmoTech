@@ -1,5 +1,3 @@
-using Domain.Entities;
-using Infrastructure.Persistences;
 using MediatR;
 
 namespace Application.Commands.Photo;
@@ -17,9 +15,9 @@ public class CreatePhotoResponse
 
 public class CreatePhotoCommandHandler : IRequestHandler<CreatePhotoCommand, CreatePhotoResponse>
 {
-    private readonly ImmotechDbContext _context;
+    private readonly IImmotechDbContext _context;
 
-    public CreatePhotoCommandHandler(ImmotechDbContext context)
+    public CreatePhotoCommandHandler(IImmotechDbContext context)
     {
         _context = context;
     }

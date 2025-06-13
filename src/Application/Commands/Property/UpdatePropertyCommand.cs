@@ -1,6 +1,6 @@
 using System;
 using Domain.Entities;
-using Infrastructure.Persistences;
+
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 

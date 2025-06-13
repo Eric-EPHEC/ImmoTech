@@ -1,4 +1,3 @@
-using Infrastructure.Persistences;
 using MediatR;
 
 namespace Application.Commands.ModerationLog;
@@ -17,9 +16,9 @@ public class CreateModerationLogResponse
 
 public class CreateModerationLogCommandHandler : IRequestHandler<CreateModerationLogCommand, CreateModerationLogResponse>
 {
-    private readonly ImmotechDbContext _context;
+    private readonly IImmotechDbContext _context;
 
-    public CreateModerationLogCommandHandler(ImmotechDbContext context)
+    public CreateModerationLogCommandHandler(IImmotechDbContext context)
     {
         _context = context;
     }

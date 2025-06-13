@@ -8,6 +8,8 @@ namespace Infrastructure.Persistences
     {
         public static void AddImmotechDbContext(this IServiceCollection services, IConfiguration configuration) 
         {
+            services.AddScoped<Application.Common.IImmotechDbContext>(provider => provider.GetRequiredService<Infrastructure.Persistences.ImmotechDbContext>());
+
             var ct = configuration.GetConnectionString("ImmoTech");
             ArgumentNullException.ThrowIfNull(ct,nameof(ct));
             services.AddDbContext<ImmotechDbContext>(o => 

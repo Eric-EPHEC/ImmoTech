@@ -1,4 +1,3 @@
-using Infrastructure.Persistences;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -23,9 +22,9 @@ public class GetAllSearchCriteriasResponseItem
 
 public class GetAllSearchCriteriasQueryHandler : IRequestHandler<GetAllSearchCriteriasQuery, GetAllSearchCriteriasResponse>
 {
-    private readonly ImmotechDbContext _context;
+    private readonly IImmotechDbContext _context;
 
-    public GetAllSearchCriteriasQueryHandler(ImmotechDbContext context)
+    public GetAllSearchCriteriasQueryHandler(IImmotechDbContext context)
     {
         _context = context;
     }

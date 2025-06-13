@@ -1,4 +1,3 @@
-using Infrastructure.Persistences;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,9 +18,9 @@ public class GetProfessionalUserByIdResponse
 
 public class GetProfessionalUserByIdQueryHandler : IRequestHandler<GetProfessionalUserByIdQuery, GetProfessionalUserByIdResponse>
 {
-    private readonly ImmotechDbContext _context;
+    private readonly IImmotechDbContext _context;
 
-    public GetProfessionalUserByIdQueryHandler(ImmotechDbContext context)
+    public GetProfessionalUserByIdQueryHandler(IImmotechDbContext context)
     {
         _context = context;
     }

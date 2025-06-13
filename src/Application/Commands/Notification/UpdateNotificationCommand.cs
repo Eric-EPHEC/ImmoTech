@@ -1,4 +1,3 @@
-using Infrastructure.Persistences;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,9 +17,9 @@ public class UpdateNotificationResponse
 
 public class UpdateNotificationCommandHandler : IRequestHandler<UpdateNotificationCommand, UpdateNotificationResponse>
 {
-    private readonly ImmotechDbContext _context;
+    private readonly IImmotechDbContext _context;
 
-    public UpdateNotificationCommandHandler(ImmotechDbContext context)
+    public UpdateNotificationCommandHandler(IImmotechDbContext context)
     {
         _context = context;
     }

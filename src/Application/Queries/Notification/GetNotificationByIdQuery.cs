@@ -1,4 +1,3 @@
-using Infrastructure.Persistences;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,9 +19,9 @@ public class GetNotificationByIdResponse
 
 public class GetNotificationByIdQueryHandler : IRequestHandler<GetNotificationByIdQuery, GetNotificationByIdResponse>
 {
-    private readonly ImmotechDbContext _context;
+    private readonly IImmotechDbContext _context;
 
-    public GetNotificationByIdQueryHandler(ImmotechDbContext context)
+    public GetNotificationByIdQueryHandler(IImmotechDbContext context)
     {
         _context = context;
     }

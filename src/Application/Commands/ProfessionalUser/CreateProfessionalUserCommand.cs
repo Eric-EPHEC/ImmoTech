@@ -1,5 +1,5 @@
 using Domain.Entities;
-using Infrastructure.Persistences;
+
 using MediatR;
 
 namespace Application.Commands.ProfessionalUser;

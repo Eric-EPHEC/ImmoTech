@@ -1,4 +1,3 @@
-using Infrastructure.Persistences;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,9 +19,9 @@ public class GetSearchCriteriaByIdResponse
 
 public class GetSearchCriteriaByIdQueryHandler : IRequestHandler<GetSearchCriteriaByIdQuery, GetSearchCriteriaByIdResponse>
 {
-    private readonly ImmotechDbContext _context;
+    private readonly IImmotechDbContext _context;
 
-    public GetSearchCriteriaByIdQueryHandler(ImmotechDbContext context)
+    public GetSearchCriteriaByIdQueryHandler(IImmotechDbContext context)
     {
         _context = context;
     }

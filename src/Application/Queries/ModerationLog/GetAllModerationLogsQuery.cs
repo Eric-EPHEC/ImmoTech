@@ -1,4 +1,3 @@
-using Infrastructure.Persistences;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -26,9 +25,9 @@ public class GetAllModerationLogsResponseItem
 
 public class GetAllModerationLogsQueryHandler : IRequestHandler<GetAllModerationLogsQuery, GetAllModerationLogsResponse>
 {
-    private readonly ImmotechDbContext _context;
+    private readonly IImmotechDbContext _context;
 
-    public GetAllModerationLogsQueryHandler(ImmotechDbContext context)
+    public GetAllModerationLogsQueryHandler(IImmotechDbContext context)
     {
         _context = context;
     }

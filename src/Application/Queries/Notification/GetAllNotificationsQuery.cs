@@ -1,4 +1,3 @@
-using Infrastructure.Persistences;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -27,9 +26,9 @@ public class GetAllNotificationsResponseItem
 
 public class GetAllNotificationsQueryHandler : IRequestHandler<GetAllNotificationsQuery, GetAllNotificationsResponse>
 {
-    private readonly ImmotechDbContext _context;
+    private readonly IImmotechDbContext _context;
 
-    public GetAllNotificationsQueryHandler(ImmotechDbContext context)
+    public GetAllNotificationsQueryHandler(IImmotechDbContext context)
     {
         _context = context;
     }

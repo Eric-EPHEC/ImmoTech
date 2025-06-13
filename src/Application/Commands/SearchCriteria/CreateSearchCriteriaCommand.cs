@@ -1,4 +1,3 @@
-using Infrastructure.Persistences;
 using MediatR;
 
 namespace Application.Commands.SearchCriteria;
@@ -18,9 +17,9 @@ public class CreateSearchCriteriaResponse
 
 public class CreateSearchCriteriaCommandHandler : IRequestHandler<CreateSearchCriteriaCommand, CreateSearchCriteriaResponse>
 {
-    private readonly ImmotechDbContext _context;
+    private readonly IImmotechDbContext _context;
 
-    public CreateSearchCriteriaCommandHandler(ImmotechDbContext context)
+    public CreateSearchCriteriaCommandHandler(IImmotechDbContext context)
     {
         _context = context;
     }

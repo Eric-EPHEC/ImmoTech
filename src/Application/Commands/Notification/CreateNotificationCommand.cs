@@ -1,4 +1,3 @@
-using Infrastructure.Persistences;
 using MediatR;
 
 namespace Application.Commands.Notification;
@@ -16,9 +15,9 @@ public class CreateNotificationResponse
 
 public class CreateNotificationCommandHandler : IRequestHandler<CreateNotificationCommand, CreateNotificationResponse>
 {
-    private readonly ImmotechDbContext _context;
+    private readonly IImmotechDbContext _context;
 
-    public CreateNotificationCommandHandler(ImmotechDbContext context)
+    public CreateNotificationCommandHandler(IImmotechDbContext context)
     {
         _context = context;
     }

@@ -1,4 +1,3 @@
-using Infrastructure.Persistences;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -26,9 +25,9 @@ public class GetAllProfessionalUsersResponseItem
 
 public class GetAllProfessionalUsersQueryHandler : IRequestHandler<GetAllProfessionalUsersQuery, GetAllProfessionalUsersResponse>
 {
-    private readonly ImmotechDbContext _context;
+    private readonly IImmotechDbContext _context;
 
-    public GetAllProfessionalUsersQueryHandler(ImmotechDbContext context)
+    public GetAllProfessionalUsersQueryHandler(IImmotechDbContext context)
     {
         _context = context;
     }

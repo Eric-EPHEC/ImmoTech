@@ -1,0 +1,13 @@
+/* Main layout styles */
+.content-wrapper {
+    min-height: calc(100vh - 120px); /* adjust depending on header/footer height */
+    padding: 1rem;
+}
+
+footer {
+    background-color: #f8f9fa;
+    padding: 1rem 0;
+    text-align: center;
+    font-size: .9rem;
+    color: #6c757d;
+} 

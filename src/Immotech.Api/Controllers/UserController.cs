@@ -27,19 +27,4 @@ public class UserController : BaseApiController
         var result = await Mediator.Send(command);
         return Ok(result);
     }
-
-    [HttpPut("{id}")]
-    public async Task<IActionResult> Update(Guid id, [FromBody] UpdateUserCommand command)
-    {
-        command.Id = id;
-        var result = await Mediator.Send(command);
-        return Ok(result);
-    }
-
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(Guid id)
-    {
-        await Mediator.Send(new DeleteUserCommand { Id = id });
-        return NoContent();
-    }
 } 

@@ -1,5 +1,3 @@
-using Domain.Entities;
-using Infrastructure.Persistences;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -28,9 +26,9 @@ public class GetAllPhotosResponseItem
 
 public class GetAllPhotosQueryHandler : IRequestHandler<GetAllPhotosQuery, GetAllPhotosResponse>
 {
-    private readonly ImmotechDbContext _context;
+    private readonly IImmotechDbContext _context;
 
-    public GetAllPhotosQueryHandler(ImmotechDbContext context)
+    public GetAllPhotosQueryHandler(IImmotechDbContext context)
     {
         _context = context;
     }
