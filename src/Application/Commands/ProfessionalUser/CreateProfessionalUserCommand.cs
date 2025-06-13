@@ -27,7 +27,7 @@ public class CreateProfessionalUserCommandHandler : IRequestHandler<CreateProfes
 
     public async Task<CreateProfessionalUserResponse> Handle(CreateProfessionalUserCommand request, CancellationToken cancellationToken)
     {
-        var proUser = new ProfessionalUser
+        var proUser = new Domain.Entities.ProfessionalUser
         {
             Id = Guid.NewGuid(),
             UserName = request.UserName,

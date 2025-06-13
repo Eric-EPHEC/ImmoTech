@@ -12,7 +12,6 @@ public class DeletePhotoCommand : IRequest<DeletePhotoResponse>
 public class DeletePhotoResponse
 {
     public int Id { get; set; }
-    public bool IsDeleted { get; set; }
 }
 
 public class DeletePhotoCommandHandler : IRequestHandler<DeletePhotoCommand, DeletePhotoResponse>
@@ -26,16 +25,15 @@ public class DeletePhotoCommandHandler : IRequestHandler<DeletePhotoCommand, Del
 
     public async Task<DeletePhotoResponse> Handle(DeletePhotoCommand request, CancellationToken cancellationToken)
     {
-        var photo = await _context.Photos.FirstOrDefaultAsync(p => p.Id == request.Id, cancellationToken);
+        var affectedRows = await _context.Photos
+            .Where(p => p.Id == request.Id)
+            .ExecuteDeleteAsync(cancellationToken);
 
-        if (photo is null)
+        if (affectedRows == 0)
         {
             throw new KeyNotFoundException($"Photo with ID {request.Id} not found.");
         }
 
-        _context.Photos.Remove(photo);
-        await _context.SaveChangesAsync(cancellationToken);
-
-        return new DeletePhotoResponse { Id = request.Id, IsDeleted = true };
+        return new DeletePhotoResponse { Id = request.Id };
     }
 } 

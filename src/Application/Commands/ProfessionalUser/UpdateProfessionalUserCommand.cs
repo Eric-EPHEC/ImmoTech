@@ -34,9 +34,9 @@ public class UpdateProfessionalUserCommandHandler : IRequestHandler<UpdateProfes
             throw new KeyNotFoundException($"ProfessionalUser with ID {request.Id} not found.");
         }
 
-        if (request.UserName is not null) proUser.UserName = request.UserName;
-        if (request.Email is not null) proUser.Email = request.Email;
-        if (request.AgencyId.HasValue) proUser.AgencyId = request.AgencyId.Value;
+        proUser.UserName = request.UserName ?? proUser.UserName;
+        proUser.Email = request.Email ?? proUser.Email;
+        proUser.AgencyId = request.AgencyId ?? proUser.AgencyId;
 
         await _context.SaveChangesAsync(cancellationToken);
         return new UpdateProfessionalUserResponse { Id = proUser.Id };

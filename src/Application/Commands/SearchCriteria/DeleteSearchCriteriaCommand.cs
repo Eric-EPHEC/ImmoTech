@@ -12,7 +12,7 @@ public class DeleteSearchCriteriaCommand : IRequest<DeleteSearchCriteriaResponse
 public class DeleteSearchCriteriaResponse
 {
     public int Id { get; set; }
-    public bool IsDeleted { get; set; }
+   
 }
 
 public class DeleteSearchCriteriaCommandHandler : IRequestHandler<DeleteSearchCriteriaCommand, DeleteSearchCriteriaResponse>
@@ -26,14 +26,7 @@ public class DeleteSearchCriteriaCommandHandler : IRequestHandler<DeleteSearchCr
 
     public async Task<DeleteSearchCriteriaResponse> Handle(DeleteSearchCriteriaCommand request, CancellationToken cancellationToken)
     {
-        var crit = await _context.SearchCriterias.FirstOrDefaultAsync(c => c.Id == request.Id, cancellationToken);
-        if (crit is null)
-        {
-            throw new KeyNotFoundException($"SearchCriteria with ID {request.Id} not found.");
-        }
-
-        _context.SearchCriterias.Remove(crit);
-        await _context.SaveChangesAsync(cancellationToken);
-        return new DeleteSearchCriteriaResponse { Id = request.Id, IsDeleted = true };
+        await _context.SearchCriterias.Where(c => c.Id == request.Id).ExecuteDeleteAsync(cancellationToken);
+        return new DeleteSearchCriteriaResponse { Id = request.Id};
     }
 } 

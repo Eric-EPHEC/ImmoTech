@@ -7,6 +7,7 @@ namespace Application.Commands.Photo;
 public class CreatePhotoCommand : IRequest<CreatePhotoResponse>
 {
     public required string Url { get; set; }
+    public bool IsMain { get; set; }
 }
 
 public class CreatePhotoResponse
@@ -28,7 +29,8 @@ public class CreatePhotoCommandHandler : IRequestHandler<CreatePhotoCommand, Cre
         var photo = new Domain.Entities.Photo
         {
             Url = request.Url,
-            UploadedAt = DateTimeOffset.UtcNow
+            UploadedAt = DateTimeOffset.UtcNow,
+            IsMain = request.IsMain
         };
 
         _context.Photos.Add(photo);

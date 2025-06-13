@@ -11,6 +11,7 @@ public class UpdateAgencyCommand : IRequest<UpdateAgencyResponse>
     public string? Name { get; set; }
     public Address? Address { get; set; }
     public string? ContactEmail { get; set; }
+    public string? LogoUrl { get; set; }
 }
 
 public class UpdateAgencyResponse
@@ -49,6 +50,11 @@ public class UpdateAgencyCommandHandler : IRequestHandler<UpdateAgencyCommand, U
         if (request.ContactEmail is not null)
         {
             agency.ContactEmail = request.ContactEmail;
+        }
+
+        if (request.LogoUrl is not null)
+        {
+            agency.LogoUrl = request.LogoUrl;
         }
 
         await _context.SaveChangesAsync(cancellationToken);

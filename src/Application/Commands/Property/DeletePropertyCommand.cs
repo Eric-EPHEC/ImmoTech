@@ -13,7 +13,7 @@ public class DeletePropertyCommand : IRequest<DeletePropertyResponse>
 public class DeletePropertyResponse
 {
     public Guid Id { get; set; }
-    public bool IsDeleted { get; set; }
+   
 }
 
 public class DeletePropertyCommandHandler : IRequestHandler<DeletePropertyCommand, DeletePropertyResponse>
@@ -27,16 +27,9 @@ public class DeletePropertyCommandHandler : IRequestHandler<DeletePropertyComman
 
     public async Task<DeletePropertyResponse> Handle(DeletePropertyCommand request, CancellationToken cancellationToken)
     {
-        var property = await _context.Properties.FirstOrDefaultAsync(p => p.Id == request.Id, cancellationToken);
 
-        if (property is null)
-        {
-            throw new KeyNotFoundException($"Property with ID {request.Id} not found.");
-        }
+        await _context.Properties.Where(p => p.Id == request.Id).ExecuteDeleteAsync(cancellationToken);
 
-        _context.Properties.Remove(property);
-        await _context.SaveChangesAsync(cancellationToken);
-
-        return new DeletePropertyResponse { Id = request.Id, IsDeleted = true };
+        return new DeletePropertyResponse { Id = request.Id};
     }
 } 

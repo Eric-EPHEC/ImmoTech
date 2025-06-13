@@ -29,6 +29,8 @@ namespace Application.Queries.Property
         public Address Address { get; set; }
         public string Location { get; set; }
         public decimal Price { get; set; }
+        public int Bedrooms { get; set; }
+        public decimal SurfaceArea { get; set; }
         public PropertyStatus Status { get; set; }
         public DateTimeOffset CreatedDate { get; set; }
         public int? AgencyId { get; set; }
@@ -84,10 +86,13 @@ namespace Application.Queries.Property
                     Address = p.Address,
                     Location = p.Location,
                     Price = p.Price,
+                    Bedrooms = p.Bedrooms,
+                    SurfaceArea = p.SurfaceArea,
                     Status = p.Status,
                     CreatedDate = p.CreatedDate,
                     AgencyId = p.AgencyId,
-                    
+                    Photos = p.Photos.Select(ph => new PhotoResponse { Id = ph.Id, Url = ph.Url, UploadedAt = ph.UploadedAt, IsMain = ph.IsMain }).ToList(),
+                    Agency = p.Agency != null ? new AgencyResponse { Id = p.Agency.Id, Name = p.Agency.Name, ContactEmail = p.Agency.ContactEmail, LogoUrl = p.Agency.LogoUrl } : null,
                 })
                 .ToListAsync(cancellationToken);
 

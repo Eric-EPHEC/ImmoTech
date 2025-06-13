@@ -34,10 +34,10 @@ public class UpdateSearchCriteriaCommandHandler : IRequestHandler<UpdateSearchCr
         {
             throw new KeyNotFoundException($"SearchCriteria with ID {request.Id} not found.");
         }
-        if (request.Keywords is not null) crit.Keywords = request.Keywords;
-        if (request.MinPrice.HasValue) crit.MinPrice = request.MinPrice.Value;
-        if (request.MaxPrice.HasValue) crit.MaxPrice = request.MaxPrice.Value;
-        if (request.Location is not null) crit.Location = request.Location;
+        crit.Keywords = request.Keywords ?? string.Empty;
+        crit.MinPrice = request.MinPrice ?? 0;
+        crit.MaxPrice = request.MaxPrice ?? 0;
+        crit.Location = request.Location ?? string.Empty;
         await _context.SaveChangesAsync(cancellationToken);
         return new UpdateSearchCriteriaResponse { Id = crit.Id };
     }

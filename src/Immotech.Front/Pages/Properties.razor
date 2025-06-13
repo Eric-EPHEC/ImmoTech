@@ -1,0 +1,62 @@
+@page "/properties"
+
+@using Immotech.Front.Models
+@using System.Linq
+@using System.Net.Http.Json
+@inject HttpClient Http
+
+<PageTitle>Properties</PageTitle>
+
+<h2 class="mb-4">Liste des biens</h2>
+
+@if (properties == null)
+{
+    <p><em>Chargement...</em></p>
+}
+else if (!properties.Any())
+{
+    <p>Aucun bien trouvé.</p>
+}
+else
+{
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        @foreach (var property in properties)
+        {
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <img src="@(GetMainPhoto(property) ?? "images/placeholders/house-placeholder.jpg")" class="card-img-top" style="object-fit: cover; height: 200px;" />
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h5 class="card-title mb-0">@property.Title</h5>
+                            @if (!string.IsNullOrWhiteSpace(property.Agency?.LogoUrl))
+                            {
+                                <img src="@property.Agency!.LogoUrl" alt="Logo agence" style="height: 32px;" />
+                            }
+                        </div>
+                        <p class="card-text text-muted">@property.Address.ZipCode @property.Address.City</p>
+                        <p class="fw-bold mb-1">@property.Price.ToString("C0")</p>
+                        <div class="d-flex gap-3 text-secondary">
+                            <span><i class="bi bi-door-closed"></i> @property.Bedrooms</span>
+                            <span><i class="bi bi-aspect-ratio"></i> @property.SurfaceArea m²</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+@code {
+    private List<Property>? properties;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var response = await Http.GetFromJsonAsync<PropertyListResponse>("property");
+        properties = response?.Properties ?? new List<Property>();
+    }
+
+    private static string? GetMainPhoto(Property prop)
+    {
+        return prop.Photos?.FirstOrDefault(p => p.IsMain)?.Url ?? prop.Photos?.FirstOrDefault()?.Url;
+    }
+} 

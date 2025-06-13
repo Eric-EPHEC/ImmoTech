@@ -9,6 +9,7 @@ public class CreateAgencyCommand : IRequest<CreateAgencyResponse>
     public required string Name { get; set; }
     public required Address Address { get; set; }
     public required string ContactEmail { get; set; }
+    public string? LogoUrl { get; set; }
 }
 
 public class CreateAgencyResponse
@@ -31,7 +32,8 @@ public class CreateAgencyCommandHandler : IRequestHandler<CreateAgencyCommand, C
         {
             Name = request.Name,
             Address = request.Address,
-            ContactEmail = request.ContactEmail
+            ContactEmail = request.ContactEmail,
+            LogoUrl = request.LogoUrl
         };
 
         _context.Agencies.Add(agency);

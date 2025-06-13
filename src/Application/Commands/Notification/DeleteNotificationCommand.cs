@@ -12,7 +12,6 @@ public class DeleteNotificationCommand : IRequest<DeleteNotificationResponse>
 public class DeleteNotificationResponse
 {
     public int Id { get; set; }
-    public bool IsDeleted { get; set; }
 }
 
 public class DeleteNotificationCommandHandler : IRequestHandler<DeleteNotificationCommand, DeleteNotificationResponse>
@@ -26,14 +25,8 @@ public class DeleteNotificationCommandHandler : IRequestHandler<DeleteNotificati
 
     public async Task<DeleteNotificationResponse> Handle(DeleteNotificationCommand request, CancellationToken cancellationToken)
     {
-        var notif = await _context.Notifications.FirstOrDefaultAsync(n => n.Id == request.Id, cancellationToken);
-        if (notif is null)
-        {
-            throw new KeyNotFoundException($"Notification with ID {request.Id} not found.");
-        }
+        await _context.Notifications.Where(n => n.Id == request.Id).ExecuteDeleteAsync(cancellationToken);
 
-        _context.Notifications.Remove(notif);
-        await _context.SaveChangesAsync(cancellationToken);
-        return new DeleteNotificationResponse { Id = request.Id, IsDeleted = true };
+        return new DeleteNotificationResponse { Id = request.Id};
     }
 } 

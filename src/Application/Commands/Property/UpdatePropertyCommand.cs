@@ -11,9 +11,11 @@ public class UpdatePropertyCommand : IRequest<UpdatePropertyResponse>
     public Guid Id { get; set; }
     public string Title { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
-    public Address Address { get; set; }
+    public required Address Address { get; set; }
     public string Location { get; set; } = string.Empty;
     public decimal Price { get; set; }
+    public int Bedrooms { get; set; }
+    public decimal SurfaceArea { get; set; }
     public PropertyStatus Status { get; set; }
     public int? AgencyId { get; set; }
 }
@@ -46,6 +48,8 @@ public class UpdatePropertyCommandHandler : IRequestHandler<UpdatePropertyComman
         property.Address = request.Address;
         property.Location = request.Location;
         property.Price = request.Price;
+        property.Bedrooms = request.Bedrooms;
+        property.SurfaceArea = request.SurfaceArea;
         property.Status = request.Status;
         property.AgencyId = request.AgencyId;
 

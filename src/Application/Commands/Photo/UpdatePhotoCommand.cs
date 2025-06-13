@@ -9,6 +9,7 @@ public class UpdatePhotoCommand : IRequest<UpdatePhotoResponse>
 {
     public int Id { get; set; }
     public string? Url { get; set; }
+    public bool? IsMain { get; set; }
 }
 
 public class UpdatePhotoResponse
@@ -37,6 +38,11 @@ public class UpdatePhotoCommandHandler : IRequestHandler<UpdatePhotoCommand, Upd
         if (request.Url is not null)
         {
             photo.Url = request.Url;
+        }
+
+        if (request.IsMain.HasValue)
+        {
+            photo.IsMain = request.IsMain.Value;
         }
 
         await _context.SaveChangesAsync(cancellationToken);

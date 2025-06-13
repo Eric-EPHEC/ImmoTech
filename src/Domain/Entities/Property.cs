@@ -9,6 +9,8 @@ public class Property
     public required string Location { get; set; }
     public decimal Price { get; set; }
     public PropertyStatus Status { get; set; }
+    public int Bedrooms { get; set; }
+    public decimal SurfaceArea { get; set; }
     public DateTimeOffset CreatedDate { get; set; }
     public int? AgencyId { get; set; }
 

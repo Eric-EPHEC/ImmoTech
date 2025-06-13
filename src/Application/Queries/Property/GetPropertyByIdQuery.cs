@@ -31,6 +31,7 @@ namespace Application.Queries.Property
         public int Id { get; set; }
         public string Name { get; set; }
         public string ContactEmail { get; set; }
+        public string? LogoUrl { get; set; }
     }
 
     public class PhotoResponse
@@ -38,6 +39,7 @@ namespace Application.Queries.Property
         public int Id { get; set; }
         public string Url { get; set; }
         public DateTimeOffset UploadedAt { get; set; }
+        public bool IsMain { get; set; }
     }
 
     public class GetPropertyByIdQueryHandler : IRequestHandler<GetPropertyByIdQuery, GetPropertyByIdResponse>
@@ -69,13 +71,15 @@ namespace Application.Queries.Property
                     {
                         Id = p.Agency.Id,
                         Name = p.Agency.Name,
-                        ContactEmail = p.Agency.ContactEmail
+                        ContactEmail = p.Agency.ContactEmail,
+                        LogoUrl = p.Agency.LogoUrl
                     } : null,
                     Photos = p.Photos.Select(photo => new PhotoResponse
                     {
                         Id = photo.Id,
                         Url = photo.Url,
-                        UploadedAt = photo.UploadedAt
+                        UploadedAt = photo.UploadedAt,
+                        IsMain = photo.IsMain
                     }).ToList()
                 })
                 .FirstOrDefaultAsync(cancellationToken);

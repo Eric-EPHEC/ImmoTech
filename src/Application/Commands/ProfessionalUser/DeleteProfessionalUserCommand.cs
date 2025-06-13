@@ -12,7 +12,7 @@ public class DeleteProfessionalUserCommand : IRequest<DeleteProfessionalUserResp
 public class DeleteProfessionalUserResponse
 {
     public Guid Id { get; set; }
-    public bool IsDeleted { get; set; }
+   
 }
 
 public class DeleteProfessionalUserCommandHandler : IRequestHandler<DeleteProfessionalUserCommand, DeleteProfessionalUserResponse>
@@ -26,15 +26,8 @@ public class DeleteProfessionalUserCommandHandler : IRequestHandler<DeleteProfes
 
     public async Task<DeleteProfessionalUserResponse> Handle(DeleteProfessionalUserCommand request, CancellationToken cancellationToken)
     {
-        var proUser = await _context.ProfessionalUsers.FirstOrDefaultAsync(u => u.Id == request.Id, cancellationToken);
-        if (proUser is null)
-        {
-            throw new KeyNotFoundException($"ProfessionalUser with ID {request.Id} not found.");
-        }
+        await _context.ProfessionalUsers.Where(u => u.Id == request.Id).ExecuteDeleteAsync(cancellationToken);
 
-        _context.ProfessionalUsers.Remove(proUser);
-        await _context.SaveChangesAsync(cancellationToken);
-
-        return new DeleteProfessionalUserResponse { Id = request.Id, IsDeleted = true };
+        return new DeleteProfessionalUserResponse { Id = request.Id};
     }
 } 

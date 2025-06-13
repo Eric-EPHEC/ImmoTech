@@ -12,6 +12,8 @@ public class CreatePropertyCommand : IRequest<CreatePropertyResponse>
     public required Address Address { get; set; }
     public required string Location { get; set; }
     public decimal Price { get; set; }
+    public int Bedrooms { get; set; }
+    public decimal SurfaceArea { get; set; }
     public int? AgencyId { get; set; }
 }
 
@@ -33,18 +35,19 @@ public class CreatePropertyCommandHandler : IRequestHandler<CreatePropertyComman
     {
         var property = new Domain.Entities.Property
         {
-            Id = Guid.NewGuid(),
             Title = request.Title,
             Description = request.Description,
             Address = request.Address,
             Location = request.Location,
             Price = request.Price,
+            Bedrooms = request.Bedrooms,
+            SurfaceArea = request.SurfaceArea,
             Status = PropertyStatus.Available,
             CreatedDate = DateTimeOffset.UtcNow,
             AgencyId = request.AgencyId
         };
 
-        await _context.Properties.AddAsync(property, cancellationToken);
+        _context.Properties.Add(property);
         await _context.SaveChangesAsync(cancellationToken);
 
         return new CreatePropertyResponse { Id = property.Id };
