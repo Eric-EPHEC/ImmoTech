@@ -5,7 +5,9 @@ namespace Application.Commands.Notification;
 public class CreateNotificationCommand : IRequest<CreateNotificationResponse>
 {
     public required string Message { get; set; }
-    public Guid UserId { get; set; }
+    public Guid SenderId { get; set; }
+    public Guid? RecipientId { get; set; }
+    public int? AgencyId { get; set; }
 }
 
 public class CreateNotificationResponse
@@ -29,7 +31,9 @@ public class CreateNotificationCommandHandler : IRequestHandler<CreateNotificati
             Message = request.Message,
             SentAt = DateTimeOffset.UtcNow,
             IsRead = false,
-            UserId = request.UserId
+            SenderId = request.SenderId,
+            RecipientId = request.RecipientId,
+            AgencyId = request.AgencyId
         };
 
         _context.Notifications.Add(notification);
