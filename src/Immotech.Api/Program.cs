@@ -2,6 +2,8 @@ using Application;
 using Infrastructure;
 using Infrastructure.Persistences;
 using Microsoft.EntityFrameworkCore;
+using Application.Common;
+using Immotech.Api.Common;
 
 var webApplicationBuilder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +20,9 @@ webApplicationBuilder.Services.AddIdentityApiEndpoints<Domain.Entities.User>(
 
 // Add Application services
 webApplicationBuilder.Services.AddApplication();
+
+webApplicationBuilder.Services.AddHttpContextAccessor();
+webApplicationBuilder.Services.AddScoped<ICurrentUser, CurrentUser>();
 
 var app = webApplicationBuilder.Build();
 

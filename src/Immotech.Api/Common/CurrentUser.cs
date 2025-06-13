@@ -2,7 +2,7 @@ using System.Security.Claims;
 using Application.Common;
 using Microsoft.AspNetCore.Http;
 
-namespace Infrastructure.Common;
+namespace Immotech.Api.Common;
 
 /// <summary>
 /// Runtime implementation of <see cref="ICurrentUser"/> that extracts information from the current <see cref="HttpContext"/>.
