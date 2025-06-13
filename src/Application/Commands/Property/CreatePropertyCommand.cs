@@ -24,9 +24,9 @@ public class CreatePropertyResponse
 
 public class CreatePropertyCommandHandler : IRequestHandler<CreatePropertyCommand, CreatePropertyResponse>
 {
-    private readonly ImmotechDbContext _context;
+    private readonly IImmotechDbContext _context;
 
-    public CreatePropertyCommandHandler(ImmotechDbContext context)
+    public CreatePropertyCommandHandler(IImmotechDbContext context)
     {
         _context = context;
     }

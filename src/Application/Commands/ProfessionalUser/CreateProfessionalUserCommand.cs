@@ -18,9 +18,9 @@ public class CreateProfessionalUserResponse
 
 public class CreateProfessionalUserCommandHandler : IRequestHandler<CreateProfessionalUserCommand, CreateProfessionalUserResponse>
 {
-    private readonly ImmotechDbContext _context;
+    private readonly IImmotechDbContext _context;
 
-    public CreateProfessionalUserCommandHandler(ImmotechDbContext context)
+    public CreateProfessionalUserCommandHandler(IImmotechDbContext context)
     {
         _context = context;
     }

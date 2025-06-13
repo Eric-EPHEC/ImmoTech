@@ -19,9 +19,9 @@ public class GetPhotoByIdResponse
 
 public class GetPhotoByIdQueryHandler : IRequestHandler<GetPhotoByIdQuery, GetPhotoByIdResponse>
 {
-    private readonly ImmotechDbContext _context;
+    private readonly IImmotechDbContext _context;
 
-    public GetPhotoByIdQueryHandler(ImmotechDbContext context)
+    public GetPhotoByIdQueryHandler(IImmotechDbContext context)
     {
         _context = context;
     }

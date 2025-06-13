@@ -17,9 +17,9 @@ public class DeleteProfessionalUserResponse
 
 public class DeleteProfessionalUserCommandHandler : IRequestHandler<DeleteProfessionalUserCommand, DeleteProfessionalUserResponse>
 {
-    private readonly ImmotechDbContext _context;
+    private readonly IImmotechDbContext _context;
 
-    public DeleteProfessionalUserCommandHandler(ImmotechDbContext context)
+    public DeleteProfessionalUserCommandHandler(IImmotechDbContext context)
     {
         _context = context;
     }

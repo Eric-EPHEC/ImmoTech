@@ -19,9 +19,9 @@ public class UpdateProfessionalUserResponse
 
 public class UpdateProfessionalUserCommandHandler : IRequestHandler<UpdateProfessionalUserCommand, UpdateProfessionalUserResponse>
 {
-    private readonly ImmotechDbContext _context;
+    private readonly IImmotechDbContext _context;
 
-    public UpdateProfessionalUserCommandHandler(ImmotechDbContext context)
+    public UpdateProfessionalUserCommandHandler(IImmotechDbContext context)
     {
         _context = context;
     }

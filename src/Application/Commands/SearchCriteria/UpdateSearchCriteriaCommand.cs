@@ -20,9 +20,9 @@ public class UpdateSearchCriteriaResponse
 
 public class UpdateSearchCriteriaCommandHandler : IRequestHandler<UpdateSearchCriteriaCommand, UpdateSearchCriteriaResponse>
 {
-    private readonly ImmotechDbContext _context;
+    private readonly IImmotechDbContext _context;
 
-    public UpdateSearchCriteriaCommandHandler(ImmotechDbContext context)
+    public UpdateSearchCriteriaCommandHandler(IImmotechDbContext context)
     {
         _context = context;
     }

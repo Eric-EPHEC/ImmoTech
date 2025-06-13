@@ -1,4 +1,3 @@
-using Infrastructure.Persistences;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,9 +16,9 @@ public class DeleteAgencyResponse
 
 public class DeleteAgencyCommandHandler : IRequestHandler<DeleteAgencyCommand, DeleteAgencyResponse>
 {
-    private readonly ImmotechDbContext _context;
+    private readonly IImmotechDbContext _context;
 
-    public DeleteAgencyCommandHandler(ImmotechDbContext context)
+    public DeleteAgencyCommandHandler(IImmotechDbContext context)
     {
         _context = context;
     }

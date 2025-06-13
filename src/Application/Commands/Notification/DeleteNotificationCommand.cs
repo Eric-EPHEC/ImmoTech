@@ -16,9 +16,9 @@ public class DeleteNotificationResponse
 
 public class DeleteNotificationCommandHandler : IRequestHandler<DeleteNotificationCommand, DeleteNotificationResponse>
 {
-    private readonly ImmotechDbContext _context;
+    private readonly IImmotechDbContext _context;
 
-    public DeleteNotificationCommandHandler(ImmotechDbContext context)
+    public DeleteNotificationCommandHandler(IImmotechDbContext context)
     {
         _context = context;
     }

@@ -16,9 +16,9 @@ public class DeletePhotoResponse
 
 public class DeletePhotoCommandHandler : IRequestHandler<DeletePhotoCommand, DeletePhotoResponse>
 {
-    private readonly ImmotechDbContext _context;
+    private readonly IImmotechDbContext _context;
 
-    public DeletePhotoCommandHandler(ImmotechDbContext context)
+    public DeletePhotoCommandHandler(IImmotechDbContext context)
     {
         _context = context;
     }

@@ -19,9 +19,9 @@ public class UpdatePhotoResponse
 
 public class UpdatePhotoCommandHandler : IRequestHandler<UpdatePhotoCommand, UpdatePhotoResponse>
 {
-    private readonly ImmotechDbContext _context;
+    private readonly IImmotechDbContext _context;
 
-    public UpdatePhotoCommandHandler(ImmotechDbContext context)
+    public UpdatePhotoCommandHandler(IImmotechDbContext context)
     {
         _context = context;
     }

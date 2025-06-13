@@ -17,9 +17,9 @@ public class DeleteSearchCriteriaResponse
 
 public class DeleteSearchCriteriaCommandHandler : IRequestHandler<DeleteSearchCriteriaCommand, DeleteSearchCriteriaResponse>
 {
-    private readonly ImmotechDbContext _context;
+    private readonly IImmotechDbContext _context;
 
-    public DeleteSearchCriteriaCommandHandler(ImmotechDbContext context)
+    public DeleteSearchCriteriaCommandHandler(IImmotechDbContext context)
     {
         _context = context;
     }

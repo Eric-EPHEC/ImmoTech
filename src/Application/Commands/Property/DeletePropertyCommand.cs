@@ -18,9 +18,9 @@ public class DeletePropertyResponse
 
 public class DeletePropertyCommandHandler : IRequestHandler<DeletePropertyCommand, DeletePropertyResponse>
 {
-    private readonly ImmotechDbContext _context;
+    private readonly IImmotechDbContext _context;
 
-    public DeletePropertyCommandHandler(ImmotechDbContext context)
+    public DeletePropertyCommandHandler(IImmotechDbContext context)
     {
         _context = context;
     }

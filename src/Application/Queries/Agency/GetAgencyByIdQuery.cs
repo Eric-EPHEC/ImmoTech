@@ -20,9 +20,9 @@ namespace Application.Queries.Agency
 
     public class GetAgencyByIdQueryHandler : IRequestHandler<GetAgencyByIdQuery, GetAgencyByIdResponse>
     {
-        private readonly ImmotechDbContext _context;
+        private readonly IImmotechDbContext _context;
 
-        public GetAgencyByIdQueryHandler(ImmotechDbContext context)
+        public GetAgencyByIdQueryHandler(IImmotechDbContext context)
         {
             _context = context;
         }

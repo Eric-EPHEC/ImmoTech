@@ -5,7 +5,8 @@ using Microsoft.AspNetCore.Http;
 namespace Immotech.Api.Common;
 
 /// <summary>
-/// Runtime implementation of <see cref="ICurrentUser"/> that extracts information from the current <see cref="HttpContext"/>.
+/// This implementation of ICurrentUser is used to get the current user from the HttpContext.
+/// HttpContext is only available in a web project.
 /// </summary>
 public sealed class CurrentUser : ICurrentUser
 {
@@ -18,12 +19,12 @@ public sealed class CurrentUser : ICurrentUser
 
     private ClaimsPrincipal? User => _httpContextAccessor.HttpContext?.User;
 
-    public Guid? UserId
+    public Guid UserId
     {
         get
         {
             var identifier = User?.FindFirstValue(ClaimTypes.NameIdentifier);
-            return Guid.TryParse(identifier, out var id) ? id : null;
+            return Guid.TryParse(identifier, out var id) ? id : throw new InvalidOperationException("User ID not found");
         }
     }
 

@@ -1,5 +1,4 @@
 using Domain.Entities;
-using Infrastructure.Persistences;
 using MediatR;
 
 namespace Application.Commands.Agency;
@@ -19,9 +18,9 @@ public class CreateAgencyResponse
 
 public class CreateAgencyCommandHandler : IRequestHandler<CreateAgencyCommand, CreateAgencyResponse>
 {
-    private readonly ImmotechDbContext _context;
+    private readonly IImmotechDbContext _context;
 
-    public CreateAgencyCommandHandler(ImmotechDbContext context)
+    public CreateAgencyCommandHandler(IImmotechDbContext context)
     {
         _context = context;
     }

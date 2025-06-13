@@ -16,7 +16,9 @@ namespace Infrastructure
         {
            services.AddImmotechDbContext(configuration);
 
-
+           services.AddHttpContextAccessor();
+           services.AddScoped<Application.Common.ICurrentUser, Infrastructure.Common.CurrentUser>();
+           services.AddScoped<Application.Common.IImmotechDbContext>(provider => provider.GetRequiredService<Infrastructure.Persistences.ImmotechDbContext>());
 
             return services;
         }

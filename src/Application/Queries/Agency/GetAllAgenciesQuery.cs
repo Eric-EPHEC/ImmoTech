@@ -28,9 +28,9 @@ namespace Application.Queries.Agency
 
     public class GetAllAgenciesQueryHandler : IRequestHandler<GetAllAgenciesQuery, GetAllAgenciesResponse>
     {
-        private readonly ImmotechDbContext _context;
+        private readonly IImmotechDbContext _context;
 
-        public GetAllAgenciesQueryHandler(ImmotechDbContext context)
+        public GetAllAgenciesQueryHandler(IImmotechDbContext context)
         {
             _context = context;
         }

@@ -2,10 +2,11 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Application.Common;
 
 namespace Infrastructure.Persistences
 {
-    public class ImmotechDbContext(DbContextOptions options) : IdentityDbContext<User, IdentityRole<Guid>, Guid>(options)
+    public class ImmotechDbContext(DbContextOptions options, Application.Common.ICurrentUser currentUser) : IdentityDbContext<User, IdentityRole<Guid>, Guid>(options), Application.Common.IImmotechDbContext
     {
         public DbSet<Property> Properties { get; set; }
         public DbSet<Agency> Agencies { get; set; }

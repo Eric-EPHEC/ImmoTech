@@ -41,9 +41,9 @@ namespace Application.Queries.Property
 
     public class GetAllPropertiesQueryHandler : IRequestHandler<GetAllPropertiesQuery, GetAllPropertiesResponse>
     {
-        private readonly ImmotechDbContext _context;
+        private readonly IImmotechDbContext _context;
 
-        public GetAllPropertiesQueryHandler(ImmotechDbContext context)
+        public GetAllPropertiesQueryHandler(IImmotechDbContext context)
         {
             _context = context;
         }

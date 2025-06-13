@@ -27,9 +27,9 @@ public class UpdatePropertyResponse
 
 public class UpdatePropertyCommandHandler : IRequestHandler<UpdatePropertyCommand, UpdatePropertyResponse>
 {
-    private readonly ImmotechDbContext _context;
+    private readonly IImmotechDbContext _context;
 
-    public UpdatePropertyCommandHandler(ImmotechDbContext context)
+    public UpdatePropertyCommandHandler(IImmotechDbContext context)
     {
         _context = context;
     }

@@ -21,9 +21,9 @@ public class UpdateAgencyResponse
 
 public class UpdateAgencyCommandHandler : IRequestHandler<UpdateAgencyCommand, UpdateAgencyResponse>
 {
-    private readonly ImmotechDbContext _context;
+    private readonly IImmotechDbContext _context;
 
-    public UpdateAgencyCommandHandler(ImmotechDbContext context)
+    public UpdateAgencyCommandHandler(IImmotechDbContext context)
     {
         _context = context;
     }

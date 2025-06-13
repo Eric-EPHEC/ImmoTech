@@ -44,9 +44,9 @@ namespace Application.Queries.Property
 
     public class GetPropertyByIdQueryHandler : IRequestHandler<GetPropertyByIdQuery, GetPropertyByIdResponse>
     {
-        private readonly ImmotechDbContext _context;
+        private readonly IImmotechDbContext _context;
 
-        public GetPropertyByIdQueryHandler(ImmotechDbContext context)
+        public GetPropertyByIdQueryHandler(IImmotechDbContext context)
         {
             _context = context;
         }
