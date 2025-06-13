@@ -54,7 +54,7 @@ public class CreateNotificationCommandHandler : IRequestHandler<CreateNotificati
         var notification = new Domain.Entities.Notification
         {
             Message = request.Message,
-            SentAt = DateTimeOffset.MinValue,
+            SentAt = null,
             IsRead = false,
             SenderEmail = request.SenderEmail,
             RecipientId = request.RecipientId,

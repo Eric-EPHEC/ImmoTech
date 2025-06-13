@@ -9,6 +9,7 @@ namespace Infrastructure
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
            services.AddImmotechDbContext(configuration);
+           services.AddBackgroundServices(configuration);
 
             return services;
         }

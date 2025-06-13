@@ -4,7 +4,7 @@ public class Notification
 {
     public int Id { get; set; }
     public string Message { get; set; } = string.Empty;
-    public DateTimeOffset SentAt { get; set; }
+    public DateTimeOffset? SentAt { get; set; }
     public bool IsRead { get; set; }
 
     // SenderEmail is required because a notification can be sent to an agency or a user
