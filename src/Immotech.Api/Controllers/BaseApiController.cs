@@ -1,9 +1,11 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MediatR;
 
 namespace Immotech.Api.Controllers;
 
 [ApiController]
+[Authorize]
 
 public class BaseApiController : ControllerBase
 {
