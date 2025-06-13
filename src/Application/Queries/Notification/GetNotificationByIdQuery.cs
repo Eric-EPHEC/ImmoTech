@@ -14,7 +14,7 @@ public class GetNotificationByIdResponse
     public string? Message { get; set; }
     public DateTimeOffset SentAt { get; set; }
     public bool IsRead { get; set; }
-    public Guid SenderId { get; set; }
+    public string? SenderEmail { get; set; }
     public Guid? RecipientId { get; set; }
     public int? AgencyId { get; set; }
 }
@@ -38,7 +38,7 @@ public class GetNotificationByIdQueryHandler : IRequestHandler<GetNotificationBy
                 Message = n.Message,
                 SentAt = n.SentAt,
                 IsRead = n.IsRead,
-                SenderId = n.SenderId,
+                SenderEmail = n.SenderEmail,
                 RecipientId = n.RecipientId,
                 AgencyId = n.AgencyId
             }).FirstOrDefaultAsync(cancellationToken);

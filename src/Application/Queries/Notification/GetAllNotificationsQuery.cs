@@ -7,7 +7,7 @@ public class GetAllNotificationsQuery : IRequest<GetAllNotificationsResponse>
 {
     public Guid? RecipientId { get; set; }
     public int? AgencyId { get; set; }
-    public Guid? SenderId { get; set; }
+    public string? SenderEmail { get; set; }
     public bool? IsRead { get; set; }
 }
 
@@ -23,7 +23,7 @@ public class GetAllNotificationsResponseItem
     public string? Message { get; set; }
     public DateTimeOffset SentAt { get; set; }
     public bool IsRead { get; set; }
-    public Guid SenderId { get; set; }
+    public string? SenderEmail { get; set; }
     public Guid? RecipientId { get; set; }
     public int? AgencyId { get; set; }
 }
@@ -47,8 +47,8 @@ public class GetAllNotificationsQueryHandler : IRequestHandler<GetAllNotificatio
         if (request.AgencyId.HasValue)
             notif = notif.Where(n => n.AgencyId == request.AgencyId.Value);
 
-        if (request.SenderId.HasValue)
-            notif = notif.Where(n => n.SenderId == request.SenderId.Value);
+        if (!string.IsNullOrWhiteSpace(request.SenderEmail))
+            notif = notif.Where(n => n.SenderEmail == request.SenderEmail);
 
         if (request.IsRead.HasValue)
             notif = notif.Where(n => n.IsRead == request.IsRead.Value);
@@ -59,7 +59,7 @@ public class GetAllNotificationsQueryHandler : IRequestHandler<GetAllNotificatio
             Message = n.Message,
             SentAt = n.SentAt,
             IsRead = n.IsRead,
-            SenderId = n.SenderId,
+            SenderEmail = n.SenderEmail,
             RecipientId = n.RecipientId,
             AgencyId = n.AgencyId
         }).ToListAsync(cancellationToken);

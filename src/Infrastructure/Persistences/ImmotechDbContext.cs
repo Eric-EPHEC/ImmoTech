@@ -87,6 +87,7 @@ namespace Infrastructure.Persistences
                 entity.Property(e => e.IsRead).HasDefaultValue(false);
                 entity.HasIndex(e => e.IsRead);
                 entity.HasQueryFilter(n => n.RecipientId == currentUser.UserId || n.AgencyId == currentUser.AgencyId);
+                entity.Property(e => e.SenderEmail).IsRequired();
             });
 
             // ModerationLog Configuration
