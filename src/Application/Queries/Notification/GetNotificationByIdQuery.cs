@@ -14,7 +14,9 @@ public class GetNotificationByIdResponse
     public string? Message { get; set; }
     public DateTimeOffset SentAt { get; set; }
     public bool IsRead { get; set; }
-    public Guid UserId { get; set; }
+    public Guid SenderId { get; set; }
+    public Guid? RecipientId { get; set; }
+    public int? AgencyId { get; set; }
 }
 
 public class GetNotificationByIdQueryHandler : IRequestHandler<GetNotificationByIdQuery, GetNotificationByIdResponse>
@@ -36,7 +38,9 @@ public class GetNotificationByIdQueryHandler : IRequestHandler<GetNotificationBy
                 Message = n.Message,
                 SentAt = n.SentAt,
                 IsRead = n.IsRead,
-                UserId = n.UserId
+                SenderId = n.SenderId,
+                RecipientId = n.RecipientId,
+                AgencyId = n.AgencyId
             }).FirstOrDefaultAsync(cancellationToken);
         if (notif is null) throw new KeyNotFoundException($"Notification with ID {request.Id} not found.");
         return notif;

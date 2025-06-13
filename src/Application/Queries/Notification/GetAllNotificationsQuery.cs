@@ -5,7 +5,9 @@ namespace Application.Queries.Notification;
 
 public class GetAllNotificationsQuery : IRequest<GetAllNotificationsResponse>
 {
-    public Guid? UserId { get; set; }
+    public Guid? RecipientId { get; set; }
+    public int? AgencyId { get; set; }
+    public Guid? SenderId { get; set; }
     public bool? IsRead { get; set; }
 }
 
@@ -21,7 +23,9 @@ public class GetAllNotificationsResponseItem
     public string? Message { get; set; }
     public DateTimeOffset SentAt { get; set; }
     public bool IsRead { get; set; }
-    public Guid UserId { get; set; }
+    public Guid SenderId { get; set; }
+    public Guid? RecipientId { get; set; }
+    public int? AgencyId { get; set; }
 }
 
 public class GetAllNotificationsQueryHandler : IRequestHandler<GetAllNotificationsQuery, GetAllNotificationsResponse>
@@ -36,8 +40,18 @@ public class GetAllNotificationsQueryHandler : IRequestHandler<GetAllNotificatio
     public async Task<GetAllNotificationsResponse> Handle(GetAllNotificationsQuery request, CancellationToken cancellationToken)
     {
         var notif = _context.Notifications.AsNoTracking();
-        if (request.UserId.HasValue) notif = notif.Where(n => n.UserId == request.UserId.Value);
-        if (request.IsRead.HasValue) notif = notif.Where(n => n.IsRead == request.IsRead.Value);
+
+        if (request.RecipientId.HasValue)
+            notif = notif.Where(n => n.RecipientId == request.RecipientId.Value);
+
+        if (request.AgencyId.HasValue)
+            notif = notif.Where(n => n.AgencyId == request.AgencyId.Value);
+
+        if (request.SenderId.HasValue)
+            notif = notif.Where(n => n.SenderId == request.SenderId.Value);
+
+        if (request.IsRead.HasValue)
+            notif = notif.Where(n => n.IsRead == request.IsRead.Value);
 
         var list = await notif.Select(n => new GetAllNotificationsResponseItem
         {
@@ -45,8 +59,11 @@ public class GetAllNotificationsQueryHandler : IRequestHandler<GetAllNotificatio
             Message = n.Message,
             SentAt = n.SentAt,
             IsRead = n.IsRead,
-            UserId = n.UserId
+            SenderId = n.SenderId,
+            RecipientId = n.RecipientId,
+            AgencyId = n.AgencyId
         }).ToListAsync(cancellationToken);
+
         return new GetAllNotificationsResponse { Notifications = list, TotalCount = list.Count };
     }
 } 
