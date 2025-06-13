@@ -1,7 +1,5 @@
 using Application.Commands.Notification;
-using Application.Queries.Notification; 
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace Immotech.Api.Controllers;
 
