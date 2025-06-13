@@ -36,9 +36,20 @@ public class UpdateAgencyCommandHandler : IRequestHandler<UpdateAgencyCommand, U
             throw new KeyNotFoundException($"Agency with ID {request.Id} not found.");
         }
 
-        agency.Name = request.Name;
-        agency.Address = request.Address;
-        agency.ContactEmail = request.ContactEmail;
+        if (request.Name is not null)
+        {
+            agency.Name = request.Name;
+        }
+
+        if (request.Address is not null)
+        {
+            agency.Address = request.Address;
+        }
+
+        if (request.ContactEmail is not null)
+        {
+            agency.ContactEmail = request.ContactEmail;
+        }
 
         await _context.SaveChangesAsync(cancellationToken);
 
