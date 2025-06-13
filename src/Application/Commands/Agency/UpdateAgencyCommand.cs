@@ -8,9 +8,9 @@ namespace Application.Commands.Agency;
 public class UpdateAgencyCommand : IRequest<UpdateAgencyResponse>
 {
     public int Id { get; set; }
-    public string Name { get; set; } = string.Empty;
-    public Address Address { get; set; }
-    public string ContactEmail { get; set; } = string.Empty;
+    public string? Name { get; set; }
+    public Address? Address { get; set; }
+    public string? ContactEmail { get; set; }
 }
 
 public class UpdateAgencyResponse

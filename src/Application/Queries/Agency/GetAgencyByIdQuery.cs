@@ -13,9 +13,9 @@ namespace Application.Queries.Agency
     public class GetAgencyByIdResponse
     {
         public int Id { get; set; }
-        public string Name { get; set; }
-        public Address Address { get; set; }
-        public string ContactEmail { get; set; }
+        public string? Name { get; set; }
+        public Address? Address { get; set; }
+        public string? ContactEmail { get; set; }
     }
 
     public class GetAgencyByIdQueryHandler : IRequestHandler<GetAgencyByIdQuery, GetAgencyByIdResponse>
