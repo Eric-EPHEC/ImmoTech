@@ -7,9 +7,10 @@ public class Notification
     public DateTimeOffset SentAt { get; set; }
     public bool IsRead { get; set; }
 
-    // Sender and Recipient are optional because a notification can be sent to an agency or a user
-    public Guid SenderId { get; set; } // UserId of the sender
-    public User Sender { get; set; } = null!; // User who sent the notification
+    // SenderEmail is required because a notification can be sent to an agency or a user
+    public required string SenderEmail { get; set; }
+
+    // Recipient and Agency are optional because a notification can be sent to an agency or a user (not both / none)
     public Guid? RecipientId { get; set; } // UserId of the recipient
     public User? Recipient { get; set; } = null!; // User who received the notification
     public int? AgencyId { get; set; } // AgencyId of the agency

@@ -5,7 +5,7 @@ namespace Application.Commands.Notification;
 public class CreateNotificationCommand : IRequest<CreateNotificationResponse>
 {
     public required string Message { get; set; }
-    public Guid SenderId { get; set; }
+    public required string SenderEmail { get; set; }
     public Guid? RecipientId { get; set; }
     public int? AgencyId { get; set; }
 }
@@ -27,15 +27,14 @@ public class CreateNotificationCommandHandler : IRequestHandler<CreateNotificati
     public async Task<CreateNotificationResponse> Handle(CreateNotificationCommand request, CancellationToken cancellationToken)
     {
         // validation
-        var hasRecipient = request.RecipientId.HasValue;
-        var hasAgency = request.AgencyId.HasValue;
-        if (hasRecipient == hasAgency)
+        var xor = request.RecipientId.HasValue ^ request.AgencyId.HasValue;
+        if (!xor)
         {
-            throw new ArgumentException("A notification must target exactly one of RecipientId or AgencyId.");
+            throw new ArgumentException("Specify RecipientId OR AgencyId (not both / none).");
         }
-        if (request.SenderId == Guid.Empty)
+        if (string.IsNullOrWhiteSpace(request.SenderEmail))
         {
-            throw new ArgumentException("SenderId must be provided.");
+            throw new ArgumentException("SenderEmail is required.");
         }
 
         var notification = new Domain.Entities.Notification
@@ -43,7 +42,7 @@ public class CreateNotificationCommandHandler : IRequestHandler<CreateNotificati
             Message = request.Message,
             SentAt = DateTimeOffset.UtcNow,
             IsRead = false,
-            SenderId = request.SenderId,
+            SenderEmail = request.SenderEmail,
             RecipientId = request.RecipientId,
             AgencyId = request.AgencyId
         };
