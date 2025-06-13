@@ -8,6 +8,7 @@ public class CreateSearchCriteriaCommand : IRequest<CreateSearchCriteriaResponse
     public decimal? MinPrice { get; set; }
     public decimal? MaxPrice { get; set; }
     public string? Location { get; set; }
+    public Guid UserId { get; set; }
 }
 
 public class CreateSearchCriteriaResponse

@@ -15,6 +15,7 @@ public class GetSearchCriteriaByIdResponse
     public decimal MinPrice { get; set; }
     public decimal MaxPrice { get; set; }
     public string? Location { get; set; }
+    public Guid UserId { get; set; }
 }
 
 public class GetSearchCriteriaByIdQueryHandler : IRequestHandler<GetSearchCriteriaByIdQuery, GetSearchCriteriaByIdResponse>

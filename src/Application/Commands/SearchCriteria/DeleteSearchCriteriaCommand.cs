@@ -7,11 +7,13 @@ namespace Application.Commands.SearchCriteria;
 public class DeleteSearchCriteriaCommand : IRequest<DeleteSearchCriteriaResponse>
 {
     public int Id { get; set; }
+    public Guid UserId { get; set; }
 }
 
 public class DeleteSearchCriteriaResponse
 {
     public int Id { get; set; }
+
    
 }
 

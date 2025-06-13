@@ -11,11 +11,13 @@ public class UpdateSearchCriteriaCommand : IRequest<UpdateSearchCriteriaResponse
     public decimal? MinPrice { get; set; }
     public decimal? MaxPrice { get; set; }
     public string? Location { get; set; }
+    public Guid UserId { get; set; }
 }
 
 public class UpdateSearchCriteriaResponse
 {
     public int Id { get; set; }
+
 }
 
 public class UpdateSearchCriteriaCommandHandler : IRequestHandler<UpdateSearchCriteriaCommand, UpdateSearchCriteriaResponse>
