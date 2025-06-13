@@ -227,3 +227,105 @@ GO
 COMMIT;
 GO
 
+BEGIN TRANSACTION;
+GO
+
+ALTER TABLE [SearchCriterias] DROP CONSTRAINT [FK_SearchCriterias_AspNetUsers_UserId];
+GO
+
+DROP INDEX [IX_SearchCriterias_UserId] ON [SearchCriterias];
+DECLARE @var0 sysname;
+SELECT @var0 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[SearchCriterias]') AND [c].[name] = N'UserId');
+IF @var0 IS NOT NULL EXEC(N'ALTER TABLE [SearchCriterias] DROP CONSTRAINT [' + @var0 + '];');
+UPDATE [SearchCriterias] SET [UserId] = '00000000-0000-0000-0000-000000000000' WHERE [UserId] IS NULL;
+ALTER TABLE [SearchCriterias] ALTER COLUMN [UserId] uniqueidentifier NOT NULL;
+ALTER TABLE [SearchCriterias] ADD DEFAULT '00000000-0000-0000-0000-000000000000' FOR [UserId];
+CREATE INDEX [IX_SearchCriterias_UserId] ON [SearchCriterias] ([UserId]);
+GO
+
+ALTER TABLE [Properties] ADD [Bedrooms] int NOT NULL DEFAULT 0;
+GO
+
+ALTER TABLE [Properties] ADD [SurfaceArea] decimal(18,2) NOT NULL DEFAULT 0.0;
+GO
+
+ALTER TABLE [Photos] ADD [IsMain] bit NOT NULL DEFAULT CAST(0 AS bit);
+GO
+
+ALTER TABLE [Agencies] ADD [LogoUrl] nvarchar(max) NULL;
+GO
+
+ALTER TABLE [SearchCriterias] ADD CONSTRAINT [FK_SearchCriterias_AspNetUsers_UserId] FOREIGN KEY ([UserId]) REFERENCES [AspNetUsers] ([Id]) ON DELETE CASCADE;
+GO
+
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20250613194157_adduserid', N'8.0.16');
+GO
+
+COMMIT;
+GO
+
+BEGIN TRANSACTION;
+GO
+
+ALTER TABLE [Notifications] DROP CONSTRAINT [FK_Notifications_AspNetUsers_UserId];
+GO
+
+DROP INDEX [IX_Notifications_UserId] ON [Notifications];
+GO
+
+DECLARE @var1 sysname;
+SELECT @var1 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[Notifications]') AND [c].[name] = N'UserId');
+IF @var1 IS NOT NULL EXEC(N'ALTER TABLE [Notifications] DROP CONSTRAINT [' + @var1 + '];');
+ALTER TABLE [Notifications] DROP COLUMN [UserId];
+GO
+
+DECLARE @var2 sysname;
+SELECT @var2 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[Notifications]') AND [c].[name] = N'SentAt');
+IF @var2 IS NOT NULL EXEC(N'ALTER TABLE [Notifications] DROP CONSTRAINT [' + @var2 + '];');
+ALTER TABLE [Notifications] ALTER COLUMN [SentAt] datetimeoffset NULL;
+GO
+
+ALTER TABLE [Notifications] ADD [AgencyId] int NULL;
+GO
+
+ALTER TABLE [Notifications] ADD [RecipientEmail] nvarchar(max) NOT NULL DEFAULT N'';
+GO
+
+ALTER TABLE [Notifications] ADD [RecipientId] uniqueidentifier NULL;
+GO
+
+ALTER TABLE [Notifications] ADD [SenderEmail] nvarchar(max) NOT NULL DEFAULT N'';
+GO
+
+CREATE INDEX [IX_Notifications_AgencyId] ON [Notifications] ([AgencyId]);
+GO
+
+CREATE INDEX [IX_Notifications_RecipientId] ON [Notifications] ([RecipientId]);
+GO
+
+CREATE INDEX [IX_Notifications_SentAt] ON [Notifications] ([SentAt]);
+GO
+
+ALTER TABLE [Notifications] ADD CONSTRAINT [FK_Notifications_Agencies_AgencyId] FOREIGN KEY ([AgencyId]) REFERENCES [Agencies] ([Id]);
+GO
+
+ALTER TABLE [Notifications] ADD CONSTRAINT [FK_Notifications_AspNetUsers_RecipientId] FOREIGN KEY ([RecipientId]) REFERENCES [AspNetUsers] ([Id]);
+GO
+
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20250613230212_updateNotificationEntity', N'8.0.16');
+GO
+
+COMMIT;
+GO
+
