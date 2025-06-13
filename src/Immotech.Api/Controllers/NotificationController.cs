@@ -1,5 +1,5 @@
 using Application.Commands.Notification;
-using Application.Queries.Notification;
+using Application.Queries.Notification; 
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
