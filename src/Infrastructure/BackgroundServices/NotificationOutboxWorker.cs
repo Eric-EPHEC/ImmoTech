@@ -38,7 +38,7 @@ public class NotificationOutboxWorker : BackgroundService
                 var notifications = await ctx.Notifications.AsNoTracking().IgnoreQueryFilters()
                                             .Where(n => !n.SentAt.HasValue)
                                             .OrderBy(n => n.Id).Select(n => new { n.Id, n.RecipientEmail, n.Message })  
-                                            .Take(50)
+                                            .Take(200)/// This represents 400 mails/minutes to prevent throttling from the mass mailing service (Sendgrid)
                                             .ToListAsync(cancellationToken);
 
                 // send in parallel
