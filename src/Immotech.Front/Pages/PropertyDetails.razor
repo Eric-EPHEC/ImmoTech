@@ -1,0 +1,95 @@
+@page "/properties/{Id:guid}"
+
+@using Immotech.Front.Models
+@using Blazored.Toast.Services
+@using Immotech.Front.Components
+@inject HttpClient Http
+@inject IToastService Toast
+@inject NavigationManager Nav
+
+@* Detailed view of a single property *@
+<LoadingOverlay IsLoading="@isBusy" />
+
+@if (isBusy && detail is null)
+{
+    <!-- overlay handles spinner -->
+}
+else if (detail is null)
+{
+    <p>Bien introuvable.</p>
+}
+else
+{
+    <article>
+        <header style="display:flex;justify-content:space-between;align-items:center;">
+            <h2>@detail.Title</h2>
+            @if (!string.IsNullOrWhiteSpace(detail.Agency?.LogoUrl))
+            {
+                <img src="@detail.Agency!.LogoUrl" style="height:40px;" />
+            }
+        </header>
+
+        @if(detail.Photos?.Any() == true)
+        {
+            <img src="@(GetMainPhoto(detail) ?? detail.Photos.First().Url)" style="width:100%;max-height:400px;object-fit:cover;border-radius:0.5rem;" />
+        }
+
+        <section>
+            <h3>Description</h3>
+            <p>@detail.Description</p>
+        </section>
+        <section style="display:flex;gap:2rem;flex-wrap:wrap;">
+            <div><strong>Adresse:</strong> @detail.Address.Street, @detail.Address.ZipCode @detail.Address.City</div>
+            <div><strong>Localité:</strong> @detail.Location</div>
+            <div><strong>Prix:</strong> @detail.Price.ToString("C0")</div>
+            <div><strong>Status:</strong> @detail.Status</div>
+            <div><strong>Date création:</strong> @detail.CreatedDate.ToLocalTime().ToString("d")</div>
+        </section>
+        @if(detail.Photos?.Count > 1)
+        {
+            <h3>Galerie</h3>
+            <div class="grid" style="grid-template-columns: repeat(auto-fill,minmax(200px,1fr));gap:1rem;">
+                @foreach(var p in detail.Photos.Skip(1))
+                {
+                    <img src="@p.Url" style="width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:0.25rem;" />
+                }
+            </div>
+        }
+        <footer style="margin-top:1rem;">
+            <button class="secondary" @onclick="Back">Retour</button>
+        </footer>
+    </article>
+}
+
+@code {
+    [Parameter] public Guid Id { get; set; }
+
+    private PropertyDetail? detail;
+    private bool isBusy;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadAsync();
+    }
+
+    private async Task LoadAsync()
+    {
+        try
+        {
+            isBusy = true;
+            detail = await Http.GetFromJsonAsync<PropertyDetail>($"property/{Id}");
+        }
+        catch(Exception ex)
+        {
+            Toast.ShowError($"Erreur chargement: {ex.Message}");
+        }
+        finally
+        {
+            isBusy = false;
+        }
+    }
+
+    private static string? GetMainPhoto(PropertyDetail p) => p.Photos?.FirstOrDefault(ph => ph.IsMain)?.Url;
+
+    private void Back() => Nav.NavigateTo("/properties");
+} 

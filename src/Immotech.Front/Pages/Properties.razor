@@ -7,6 +7,7 @@
 @using Immotech.Front.Components
 @inject HttpClient Http
 @inject IToastService Toast
+@inject NavigationManager Nav
 
 <PageTitle>Properties</PageTitle>
 
@@ -82,7 +83,7 @@ else
 
     private void NavigateToDetails(Guid id)
     {
-        // TODO: navigate to detail page when implemented
+        Nav.NavigateTo($"/properties/{id}");
     }
 
     private void PromptDelete(Guid id)
