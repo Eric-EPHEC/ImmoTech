@@ -1,0 +1,136 @@
+@using Immotech.Front.Models
+@using Blazored.Toast.Services
+@using Immotech.Front.Components
+@inject HttpClient Http
+@inject IToastService Toast
+@inject NavigationManager Nav
+
+@* Form for creating or editing a property *@
+<EditForm Model="model" EditContext="editCtx" OnValidSubmit="SaveAsync">
+    <DataAnnotationsValidator />
+    <ValidationErrors />
+
+    <div class="grid" style="grid-template-columns: 1fr 1fr; gap:1rem;">
+        <div>
+            <label>Titre</label>
+            <input type="text" @bind="model.Title" />
+        </div>
+        <div>
+            <label>Prix (€)</label>
+            <input type="number" step="1000" @bind="model.Price" />
+        </div>
+        <div>
+            <label>Description</label>
+            <textarea rows="4" @bind="model.Description"></textarea>
+        </div>
+        <div>
+            <label>Nombre de chambres</label>
+            <input type="number" @bind="model.Bedrooms" />
+        </div>
+        <div>
+            <label>Surface (m²)</label>
+            <input type="number" @bind="model.SurfaceArea" />
+        </div>
+        <div>
+            <label>Rue</label>
+            <input type="text" @bind="model.Street" />
+        </div>
+        <div>
+            <label>Code postal</label>
+            <input type="text" @bind="model.ZipCode" />
+        </div>
+        <div>
+            <label>Ville</label>
+            <input type="text" @bind="model.City" />
+        </div>
+        <div>
+            <label>Province/État</label>
+            <input type="text" @bind="model.State" />
+        </div>
+        <div>
+            <label>Localisation </label>
+            <input type="text" @bind="model.Location" />
+        </div>
+    </div>
+
+    <footer style="margin-top:1rem; display:flex; gap:0.5rem;">
+        <button class="secondary" type="button" @onclick="Cancel">Annuler</button>
+        <button class="contrast" type="submit">Enregistrer</button>
+    </footer>
+</EditForm>
+
+<LoadingOverlay IsLoading="@isBusy" />
+
+@code {
+    [Parameter] public Guid? Id { get; set; }
+
+    private readonly PropertyUpsertModel model = new();
+    private EditContext? editCtx;
+    private bool isBusy;
+
+    protected override async Task OnInitializedAsync()
+    {
+        editCtx = new EditContext(model);
+
+        if (Id.HasValue && Id != Guid.Empty)
+        {
+            await LoadExistingAsync(Id.Value);
+        }
+    }
+
+    private async Task LoadExistingAsync(Guid id)
+    {
+        try
+        {
+            isBusy = true;
+            var existing = await Http.GetFromJsonAsync<PropertyDetail>($"property/{id}");
+            if (existing is null)
+            {
+                Toast.ShowError("Bien introuvable");
+                Nav.NavigateTo("/properties");
+                return;
+            }
+
+            // map to model
+            model.Id = existing.Id;
+            model.Title = existing.Title;
+            model.Description = existing.Description;
+            model.Price = (int)existing.Price;
+            model.Bedrooms = existing.Bedrooms;
+            model.SurfaceArea = (int)existing.SurfaceArea;
+            model.Street = existing.Address.Street;
+            model.City = existing.Address.City;
+            model.State = existing.Address.State;   
+            model.ZipCode = existing.Address.ZipCode;
+            model.Location = existing.Location;
+            model.AgencyId = existing.AgencyId;
+        }
+        finally { isBusy = false; }
+    }
+
+    private async Task SaveAsync()
+    {
+        try
+        {
+            isBusy = true;
+            if (model.Id is null)
+            {
+                await Http.PostAsJsonAsync("property", model);
+                Toast.ShowSuccess("Bien créé");
+            }
+            else
+            {
+                await Http.PutAsJsonAsync($"property/{model.Id}", model);
+                Toast.ShowSuccess("Bien mis à jour");
+            }
+            Nav.NavigateTo("/properties");
+        }
+        catch(Exception ex)
+        {
+            Toast.ShowError($"Erreur: {ex.Message}");
+        }
+        finally { isBusy = false; }
+    }
+
+    private void Cancel() => Nav.NavigateTo("/properties");
+} 

@@ -14,4 +14,6 @@ public class PropertyDetail
     public int? AgencyId { get; set; }
     public Agency? Agency { get; set; }
     public List<Photo>? Photos { get; set; }
+    public int Bedrooms { get; set; }
+    public int SurfaceArea { get; set; }
 } 
