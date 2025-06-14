@@ -13,7 +13,7 @@ public class NotificationOutboxWorker : BackgroundService
 {
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly ILogger<NotificationOutboxWorker> _logger;
-    private readonly TimeSpan _interval = TimeSpan.FromSeconds(30);
+    private readonly TimeSpan _interval = TimeSpan.FromSeconds(30); // TODO: make this time span configurable
 
     public NotificationOutboxWorker(IServiceScopeFactory scopeFactory, ILogger<NotificationOutboxWorker> logger)
     {
