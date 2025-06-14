@@ -86,7 +86,7 @@ namespace Infrastructure.Persistences
                 entity.Property(e => e.Message).IsRequired();
                 entity.Property(e => e.IsRead).HasDefaultValue(false);
                 entity.HasIndex(e => e.IsRead);
-                entity.HasQueryFilter(n => n.RecipientId == currentUser.UserId || n.AgencyId == currentUser.AgencyId);
+                entity.HasQueryFilter(n => n.RecipientId == currentUser.UserId || n.AgencyId == currentUser.AgencyId); // TODO: remove this query filter
                 entity.Property(e => e.SenderEmail).IsRequired();
                 entity.Property(e => e.RecipientEmail).IsRequired();
                 entity.HasIndex(e => e.SentAt);

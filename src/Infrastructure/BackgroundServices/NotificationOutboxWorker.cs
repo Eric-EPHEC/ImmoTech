@@ -35,7 +35,7 @@ public class NotificationOutboxWorker : BackgroundService
 
                 // get the notifications that are not sent yet
 
-                var notifications = await ctx.Notifications.AsNoTracking()
+                var notifications = await ctx.Notifications.AsNoTracking().IgnoreQueryFilters()
                                             .Where(n => !n.SentAt.HasValue)
                                             .OrderBy(n => n.Id).Select(n => new { n.Id, n.RecipientEmail, n.Message })  
                                             .Take(50)
@@ -52,7 +52,7 @@ public class NotificationOutboxWorker : BackgroundService
                 if (notifications.Count > 0)
                 {
                     var ids = notifications.Select(n => n.Id).ToList();
-                    await ctx.Notifications
+                    await ctx.Notifications.IgnoreQueryFilters()
                              .Where(n => ids.Contains(n.Id))
                              .ExecuteUpdateAsync(s => s.SetProperty(n => n.SentAt, _ => DateTimeOffset.UtcNow), cancellationToken);
                 }
