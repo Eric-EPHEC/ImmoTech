@@ -3,56 +3,113 @@
 @using Immotech.Front.Models
 @using System.Linq
 @using System.Net.Http.Json
+@using Blazored.Toast.Services
+@using Immotech.Front.Components
 @inject HttpClient Http
+@inject IToastService Toast
 
 <PageTitle>Properties</PageTitle>
 
-<h2 class="mb-4">Liste des biens</h2>
+@* List all properties with delete using ConfirmDialog + LoadingOverlay (Pico CSS) *@
+<LoadingOverlay IsLoading="@isBusy" />
+<ConfirmDialog @ref="confirmDeleteDlg" Title="Supprimer" Message="Supprimer ce bien ?" Closed="OnDeleteConfirmed" />
 
-@if (properties == null)
+<h2 class="mb-3">Liste des biens</h2>
+
+@if(isBusy && properties is null)
 {
-    <p><em>Chargement...</em></p>
+    <!-- data loading handled by overlay -->
 }
-else if (!properties.Any())
+else if (properties is null || !properties.Any())
 {
     <p>Aucun bien trouvé.</p>
 }
 else
 {
-    <div class="row row-cols-1 row-cols-md-3 g-4">
+    <div class="grid">
         @foreach (var property in properties)
         {
-            <div class="col">
-                <div class="card h-100 shadow-sm">
-                    <img src="@(GetMainPhoto(property) ?? "images/placeholders/house-placeholder.jpg")" class="card-img-top" style="object-fit: cover; height: 200px;" />
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <h5 class="card-title mb-0">@property.Title</h5>
-                            @if (!string.IsNullOrWhiteSpace(property.Agency?.LogoUrl))
-                            {
-                                <img src="@property.Agency!.LogoUrl" alt="Logo agence" style="height: 32px;" />
-                            }
-                        </div>
-                        <p class="card-text text-muted">@property.Address.ZipCode @property.Address.City</p>
-                        <p class="fw-bold mb-1">@property.Price.ToString("C0")</p>
-                        <div class="d-flex gap-3 text-secondary">
-                            <span><i class="bi bi-door-closed"></i> @property.Bedrooms</span>
-                            <span><i class="bi bi-aspect-ratio"></i> @property.SurfaceArea m²</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <article>
+                <img src="@(GetMainPhoto(property) ?? "images/placeholders/house-placeholder.jpg")" style="width:100%;aspect-ratio:16/9;object-fit:cover;" />
+                <header style="display:flex;justify-content:space-between;align-items:center;">
+                    <h3 style="margin:0;">@property.Title</h3>
+                    @if (!string.IsNullOrWhiteSpace(property.Agency?.LogoUrl))
+                    {
+                        <img src="@property.Agency!.LogoUrl" alt="Logo agence" style="height:32px;" />
+                    }
+                </header>
+                <p class="text-muted">@property.Address.ZipCode @property.Address.City</p>
+                <p><strong>@property.Price.ToString("C0")</strong></p>
+                <p>@property.Bedrooms chambre(s) · @property.SurfaceArea m²</p>
+                <footer style="display:flex;justify-content:flex-end;gap:0.5rem;">
+                    <button class="secondary" @onclick="() => NavigateToDetails(property.Id)">Détails</button>
+                    <button class="contrast" @onclick="() => PromptDelete(property.Id)">Supprimer</button>
+                </footer>
+            </article>
         }
     </div>
 }
 
 @code {
     private List<Property>? properties;
+    private bool isBusy;
+    private Guid _deleteId;
+    private ConfirmDialog? confirmDeleteDlg;
 
     protected override async Task OnInitializedAsync()
     {
-        var response = await Http.GetFromJsonAsync<PropertyListResponse>("property");
-        properties = response?.Properties ?? new List<Property>();
+        await LoadDataAsync();
+    }
+
+    private async Task LoadDataAsync()
+    {
+        try
+        {
+            isBusy = true;
+            // get list from API
+            var response = await Http.GetFromJsonAsync<PropertyListResponse>("property");
+            properties = response?.Properties ?? new List<Property>();
+        }
+        catch(Exception ex)
+        {
+            Toast.ShowError($"Erreur chargement: {ex.Message}");
+        }
+        finally
+        {
+            isBusy = false;
+        }
+    }
+
+    private void NavigateToDetails(Guid id)
+    {
+        // TODO: navigate to detail page when implemented
+    }
+
+    private void PromptDelete(Guid id)
+    {
+        _deleteId = id;
+        confirmDeleteDlg?.Show();
+    }
+
+    private async Task OnDeleteConfirmed(bool confirmed)
+    {
+        if (!confirmed) return;
+
+        try
+        {
+            isBusy = true;
+            await Http.DeleteAsync($"property/{_deleteId}");
+            properties?.RemoveAll(p => p.Id == _deleteId);
+            Toast.ShowSuccess("Bien supprimé");
+        }
+        catch(Exception ex)
+        {
+            Toast.ShowError($"Erreur suppression: {ex.Message}");
+        }
+        finally
+        {
+            isBusy = false;
+        }
     }
 
     private static string? GetMainPhoto(Property prop)

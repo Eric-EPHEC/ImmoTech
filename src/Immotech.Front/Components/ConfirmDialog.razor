@@ -1,5 +1,6 @@
 @inherits ComponentBase
 
+@* Reusable confirmation dialog (OK / Cancel) to ask user before critical actions *@
 @if (Visible)
 {
     <div class="dialog-backdrop">
@@ -15,8 +16,8 @@
 }
 
 @code {
-    [Parameter] public string Title { get; set; } = "Confirm";
-    [Parameter] public string Message { get; set; } = "Are you sure?";
+    [Parameter] public string Title { get; set; } = "Confirmation";
+    [Parameter] public string Message { get; set; } = "Êtes vous certain?";
     [Parameter] public EventCallback<bool> Closed { get; set; }
 
     private bool Visible { get; set; }

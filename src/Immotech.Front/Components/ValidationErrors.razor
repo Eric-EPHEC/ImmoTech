@@ -1,6 +1,7 @@
 @inherits ComponentBase
 @using Microsoft.AspNetCore.Components.Forms
 
+@*Lists validation messages from EditForm so user sees errors *@
 @if (EditContext is not null)
 {
     var messages = EditContext.GetValidationMessages();
