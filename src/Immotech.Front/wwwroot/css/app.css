@@ -101,3 +101,33 @@ a, .btn-link {
 code {
     color: #c02d76;
 }
+
+/* ---- Pico dialog & overlay helpers ---- */
+.dialog-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1050;
+}
+
+.dialog {
+    max-width: 420px;
+    width: 90%;
+    background: var(--pico-background-color, #fff);
+    border-radius: .5rem;
+    padding: 1rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,.2);
+}
+
+.loading-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(255,255,255,.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}

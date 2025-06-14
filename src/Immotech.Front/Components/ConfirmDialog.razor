@@ -1,0 +1,41 @@
+@inherits ComponentBase
+
+@if (Visible)
+{
+    <div class="dialog-backdrop">
+        <article class="dialog">
+            <header><h3>@Title</h3></header>
+            <p>@Message</p>
+            <footer style="display:flex; justify-content:flex-end; gap:0.5rem;">
+                <button class="secondary" @onclick="OnCancel">Cancel</button>
+                <button class="contrast" @onclick="OnOk">OK</button>
+            </footer>
+        </article>
+    </div>
+}
+
+@code {
+    [Parameter] public string Title { get; set; } = "Confirm";
+    [Parameter] public string Message { get; set; } = "Are you sure?";
+    [Parameter] public EventCallback<bool> Closed { get; set; }
+
+    private bool Visible { get; set; }
+
+    public void Show()
+    {
+        Visible = true;
+        StateHasChanged();
+    }
+
+    private async Task OnOk()
+    {
+        Visible = false;
+        await Closed.InvokeAsync(true);
+    }
+
+    private async Task OnCancel()
+    {
+        Visible = false;
+        await Closed.InvokeAsync(false);
+    }
+} 
