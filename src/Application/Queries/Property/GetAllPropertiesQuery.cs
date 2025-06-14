@@ -50,7 +50,8 @@ namespace Application.Queries.Property
 
         public async Task<GetAllPropertiesResponse> Handle(GetAllPropertiesQuery request, CancellationToken cancellationToken)
         {
-            var query = _context.Properties.AsNoTracking();
+            // Ignore global filters so admin searches also see soft-deleted or unpublished items and for the unauthenticated user to see all properties
+            var query = _context.Properties.AsNoTracking().IgnoreQueryFilters();
 
             if (request.MinPrice.HasValue)
             {
