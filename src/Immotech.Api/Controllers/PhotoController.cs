@@ -1,6 +1,7 @@
 using Application.Commands.Photo;
 using Application.Queries.Photo;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Immotech.Api.Controllers;
 
@@ -8,6 +9,7 @@ namespace Immotech.Api.Controllers;
 public class PhotoController : BaseApiController
 {
     [HttpGet]
+    [AllowAnonymous] // Allow all users to access this endpoint
     public async Task<IActionResult> GetAll([FromQuery] GetAllPhotosQuery query)
     {
         var result = await Mediator.Send(query);
@@ -15,6 +17,7 @@ public class PhotoController : BaseApiController
     }
 
     [HttpGet("{id}")]
+    [AllowAnonymous] // Allow all users to access this endpoint
     public async Task<IActionResult> GetById(int id)
     {
         var result = await Mediator.Send(new GetPhotoByIdQuery { Id = id });

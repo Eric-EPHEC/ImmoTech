@@ -1,6 +1,7 @@
 using Application.Commands.Property;
 using Application.Queries.Property;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Immotech.Api.Controllers;
 
@@ -8,6 +9,7 @@ namespace Immotech.Api.Controllers;
 public class PropertyController : BaseApiController
 {
     [HttpGet]
+    [AllowAnonymous] // Allow all users to access this endpoint
     public async Task<IActionResult> GetAll([FromQuery] GetAllPropertiesQuery query)
     {
         var result = await Mediator.Send(query);
@@ -15,6 +17,7 @@ public class PropertyController : BaseApiController
     }
 
     [HttpGet("{id}")]
+    [AllowAnonymous] // Allow all users to access this endpoint
     public async Task<IActionResult> GetById(Guid id)
     {
         var result = await Mediator.Send(new GetPropertyByIdQuery { Id = id });

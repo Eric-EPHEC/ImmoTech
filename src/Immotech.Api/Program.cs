@@ -24,6 +24,16 @@ webApplicationBuilder.Services.AddApplication();
 webApplicationBuilder.Services.AddHttpContextAccessor();
 webApplicationBuilder.Services.AddScoped<ICurrentUser, CurrentUser>();
 
+webApplicationBuilder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", builder =>
+    {
+        builder.SetIsOriginAllowed(origin => true)
+               .AllowAnyMethod()
+               .AllowAnyHeader();      
+    });
+});
+
 var app = webApplicationBuilder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -39,6 +49,7 @@ if (app.Environment.IsDevelopment())
   
 }
 
+app.UseCors("AllowAll");
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
