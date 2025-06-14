@@ -53,8 +53,10 @@ namespace Application.Queries.Property
 
         public async Task<GetPropertyByIdResponse> Handle(GetPropertyByIdQuery request, CancellationToken cancellationToken)
         {
+            // Ignore global filters for detail page so every property id is reachable
             var property = await _context.Properties
                 .AsNoTracking()
+                .IgnoreQueryFilters()
                 .Where(p => p.Id == request.Id)
                 .Select(p => new GetPropertyByIdResponse
                 {
