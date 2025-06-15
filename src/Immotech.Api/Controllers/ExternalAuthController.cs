@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Domain.Entities;
+using Immotech.Api.Common;
 
 namespace Immotech.Api.Controllers;
 
@@ -14,12 +15,14 @@ public class ExternalAuthController : ControllerBase
     private readonly UserManager<User> _userManager;
     private readonly SignInManager<User> _signInManager;
     private readonly IConfiguration _config;
+    private readonly IJwtTokenGenerator _tokenGenerator;
 
-    public ExternalAuthController(UserManager<User> userManager, SignInManager<User> signInManager, IConfiguration config)
+    public ExternalAuthController(UserManager<User> userManager, SignInManager<User> signInManager, IConfiguration config, IJwtTokenGenerator tokenGenerator)
     {
         _userManager = userManager;
         _signInManager = signInManager;
         _config = config;
+        _tokenGenerator = tokenGenerator;
     }
 
     // GET /auth/external/{provider}
@@ -59,9 +62,8 @@ public class ExternalAuthController : ControllerBase
             user = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
         }
 
-        // Issue a very simple token placeholder (for real app generate JWT)
-        var token = Guid.NewGuid().ToString();
-        // TODO: replace with proper JWT
+        // generate JWT for the signed-in user
+        var token = _tokenGenerator.GenerateToken(user);
 
         // redirect back to SPA with token query param
         var spaUrl = _config["Spa:Url"] ?? "https://localhost:7236";
