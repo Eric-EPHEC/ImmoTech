@@ -24,6 +24,26 @@ webApplicationBuilder.Services.AddApplication();
 webApplicationBuilder.Services.AddHttpContextAccessor();
 webApplicationBuilder.Services.AddScoped<ICurrentUser, CurrentUser>();
 
+// configure social login providers (Google, Microsoft, Facebook)
+webApplicationBuilder.Services.AddAuthentication()
+    .AddGoogle(o =>
+    {
+        o.ClientId = webApplicationBuilder.Configuration["Auth:Google:ClientId"]!;
+        o.ClientSecret = webApplicationBuilder.Configuration["Auth:Google:ClientSecret"]!;
+        o.Scope.Add("email");
+    })
+    .AddMicrosoftAccount(o =>
+    {
+        o.ClientId = webApplicationBuilder.Configuration["Auth:Microsoft:ClientId"]!;
+        o.ClientSecret = webApplicationBuilder.Configuration["Auth:Microsoft:ClientSecret"]!;
+    })
+    .AddFacebook(o =>
+    {
+        o.AppId = webApplicationBuilder.Configuration["Auth:Facebook:AppId"]!;
+        o.AppSecret = webApplicationBuilder.Configuration["Auth:Facebook:AppSecret"]!;
+    });
+// Note: JwtBearer added later via Identity endpoints
+
 webApplicationBuilder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", builder =>
