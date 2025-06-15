@@ -13,7 +13,7 @@ namespace Application.Queries.Property
         public string? Location { get; set; }
         public PropertyStatus? Status { get; set; }
         public int? AgencyId { get; set; }
-        public Domain.Entities.PropertyType? PropertyType { get; set; }
+        public PropertyType? PropertyType { get; set; }
 
         // pagination
         public int PageNumber { get; set; } = 1; // 1-based index
@@ -35,9 +35,9 @@ namespace Application.Queries.Property
         public string Location { get; set; }
         public decimal Price { get; set; }
         public int Bedrooms { get; set; }
-        public decimal SurfaceArea { get; set; }
+        public int SurfaceArea { get; set; }
         public PropertyStatus Status { get; set; }
-        public Domain.Entities.PropertyType PropertyType { get; set; }
+        public PropertyType PropertyType { get; set; }
         public DateTimeOffset CreatedDate { get; set; }
         public int? AgencyId { get; set; }
         public AgencyResponse Agency { get; set; }

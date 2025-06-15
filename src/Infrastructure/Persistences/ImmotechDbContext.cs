@@ -67,6 +67,10 @@ namespace Infrastructure.Persistences
                 entity.HasIndex(e => e.AgencyId);
                 entity.HasIndex(e => e.Status);
                 entity.HasIndex(e => e.Price);
+
+                entity.Property(p => p.Type)
+                    .HasConversion<string>()
+                    .HasMaxLength(50);
             });
 
 

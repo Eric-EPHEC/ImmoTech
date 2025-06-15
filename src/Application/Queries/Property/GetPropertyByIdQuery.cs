@@ -25,6 +25,8 @@ namespace Application.Queries.Property
         public int? AgencyId { get; set; }
         public AgencyResponse Agency { get; set; }
         public List<PhotoResponse> Photos { get; set; }
+        public int Bedrooms { get; set; }
+        public int SurfaceArea { get; set; }
     }
 
     public class AgencyResponse
@@ -84,7 +86,9 @@ namespace Application.Queries.Property
                         Url = photo.Url,
                         UploadedAt = photo.UploadedAt,
                         IsMain = photo.IsMain
-                    }).ToList()
+                    }).ToList(),
+                    Bedrooms = p.Bedrooms,
+                    SurfaceArea = p.SurfaceArea
                 })
                 .FirstOrDefaultAsync(cancellationToken);
 
