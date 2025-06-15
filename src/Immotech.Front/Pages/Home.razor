@@ -1,5 +1,6 @@
 ﻿@page "/"
 @inject NavigationManager Nav
+@using Immotech.Front.Models
 
 <PageTitle>Immotech – Accueil</PageTitle>
 
@@ -38,10 +39,10 @@
                             <label for="search-type" class="visually-hidden">Type de bien</label>
                             <select id="search-type" class="form-select form-select-lg" @bind="searchModel.PropertyType">
                                 <option value="">Type de bien</option>
-                                <option value="Maison">Maison</option>
-                                <option value="Appartement">Appartement</option>
-                                <option value="Studio">Studio</option>
-                                <option value="Terrain">Terrain</option>
+                                @foreach(var t in Enum.GetValues<PropertyType>())
+                                {
+                                    <option value="@t">@t</option>
+                                }
                             </select>
                         </div>
                         <div class="col-12 col-md">

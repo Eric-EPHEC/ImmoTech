@@ -16,4 +16,5 @@ public class PropertyDetail
     public List<Photo>? Photos { get; set; }
     public int Bedrooms { get; set; }
     public int SurfaceArea { get; set; }
+    public PropertyType Type { get; set; }
 } 

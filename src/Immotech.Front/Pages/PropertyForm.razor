@@ -33,6 +33,15 @@
             <input type="number" @bind="model.SurfaceArea" />
         </div>
         <div>
+            <label>Type de bien</label>
+            <select @bind="model.Type">
+                @foreach(var t in Enum.GetValues<PropertyType>())
+                {
+                    <option value="@t">@t</option>
+                }
+            </select>
+        </div>
+        <div>
             <label>Agence</label>
             <select @bind="model.AgencyId">
                 <option value="">--Aucune--</option>
@@ -114,6 +123,7 @@
             model.Price = (int)existing.Price;
             model.Bedrooms = existing.Bedrooms;
             model.SurfaceArea = (int)existing.SurfaceArea;
+            model.Type = existing.Type;
             model.Street = existing.Address.Street;
             model.City = existing.Address.City;
             model.State = existing.Address.State;   
@@ -138,6 +148,7 @@
                 Price = (decimal)model.Price,
                 model.Bedrooms,
                 model.SurfaceArea,
+                model.Type,
                 model.AgencyId
             };
 

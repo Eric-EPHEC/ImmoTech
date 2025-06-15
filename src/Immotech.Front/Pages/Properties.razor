@@ -37,10 +37,10 @@
                 <input placeholder="Chambres"    type="number" value="@minBedrooms" @oninput="e => { minBedrooms = string.IsNullOrWhiteSpace(e.Value?.ToString()) ? null : int.Parse(e.Value!.ToString()!); OnFilterChanged(); }" />
                 <select value="@propertyType" @onchange="e => { propertyType = string.IsNullOrWhiteSpace(e.Value?.ToString()) ? null : e.Value.ToString(); OnFilterChanged(); }">
                     <option value="">--Type de bien--</option>
-                    <option value="Maison">Maison</option>
-                    <option value="Appartement">Appartement</option>
-                    <option value="Studio">Studio</option>
-                    <option value="Terrain">Terrain</option>
+                    @foreach(var t in Enum.GetValues<PropertyType>())
+                    {
+                        <option value="@t" selected="@(propertyType==t.ToString())">@t</option>
+                    }
                 </select>
                 <select value="@status" @onchange="e => { status = string.IsNullOrWhiteSpace(e.Value?.ToString()) ? null : Enum.Parse<PropertyStatus>(e.Value!.ToString()!); OnFilterChanged(); }">
                     <option value="">--Statut--</option>

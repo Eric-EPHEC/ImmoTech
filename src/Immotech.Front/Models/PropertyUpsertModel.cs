@@ -32,5 +32,8 @@ public class PropertyUpsertModel
     [Range(0, 100000)]
     public int SurfaceArea { get; set; } // in m²
 
+    [Required]
+    public PropertyType Type { get; set; } = PropertyType.House; // default value
+
     public int? AgencyId { get; set; }
 } 
