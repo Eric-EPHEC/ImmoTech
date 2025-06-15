@@ -1,0 +1,19 @@
+@page "/logout"
+
+@inject NavigationManager Nav
+@inject Immotech.Front.Services.AuthService Auth
+@inject IJSRuntime JS
+@inject Blazored.Toast.Services.IToastService Toast
+
+<p>Déconnexion...</p>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await Auth.LogoutAsync();
+        Toast.ShowSuccess("Déconnecté");
+        // small delay for UX
+        await Task.Delay(300);
+        Nav.NavigateTo("/");
+    }
+} 

@@ -21,4 +21,10 @@ public class AuthService
         // authenticated if we have any non-empty token
         return !string.IsNullOrWhiteSpace(token);
     }
+
+    // clear token from storage -> user becomes anonymous
+    public async Task LogoutAsync()
+    {
+        await _js.InvokeVoidAsync("localStorage.removeItem", "authToken");
+    }
 } 
