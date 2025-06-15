@@ -45,6 +45,10 @@
                 <div><strong>Prix:</strong> @detail.Price.ToString("C0")</div>
                 <div><strong>Status:</strong> @detail.Status</div>
                 <div><strong>Date création:</strong> @detail.CreatedDate.ToLocalTime().ToString("d")</div>
+                <div><strong>Type:</strong> @detail.Type</div>
+                <div><strong>Offre:</strong> @((detail.BidType==PropertyBidType.Sale?"Vente":"Location"))</div>
+                <div><strong>Chambres:</strong> @detail.Bedrooms</div>
+                <div><strong>Surface:</strong> @detail.SurfaceArea m²</div>
             </section>
             @if(detail.Photos?.Count > 1)
             {

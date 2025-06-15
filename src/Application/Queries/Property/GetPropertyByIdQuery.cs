@@ -102,4 +102,4 @@ namespace Application.Queries.Property
             return property;
         }
     }
-} 
+}
