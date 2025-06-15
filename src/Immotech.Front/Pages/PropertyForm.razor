@@ -42,6 +42,15 @@
             </select>
         </div>
         <div>
+            <label>Type d'offre</label>
+            <select @bind="model.BidType">
+                @foreach(var bt in Enum.GetValues<PropertyBidType>())
+                {
+                    <option value="@bt">@((bt==PropertyBidType.Sale?"Vente":"Location"))</option>
+                }
+            </select>
+        </div>
+        <div>
             <label>Agence</label>
             <select @bind="model.AgencyId">
                 <option value="">--Aucune--</option>
@@ -130,6 +139,7 @@
             model.ZipCode = existing.Address.ZipCode;
             model.Location = existing.Location;
             model.AgencyId = existing.AgencyId;
+            model.BidType = existing.BidType;
         }
         finally { isBusy = false; }
     }
@@ -149,6 +159,7 @@
                 model.Bedrooms,
                 model.SurfaceArea,
                 model.Type,
+                model.BidType,
                 model.AgencyId
             };
 

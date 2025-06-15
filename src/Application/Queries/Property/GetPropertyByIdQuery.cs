@@ -27,6 +27,7 @@ namespace Application.Queries.Property
         public List<PhotoResponse> Photos { get; set; }
         public int Bedrooms { get; set; }
         public int SurfaceArea { get; set; }
+        public PropertyBidType BidType { get; set; }
     }
 
     public class AgencyResponse
@@ -88,7 +89,8 @@ namespace Application.Queries.Property
                         IsMain = photo.IsMain
                     }).ToList(),
                     Bedrooms = p.Bedrooms,
-                    SurfaceArea = p.SurfaceArea
+                    SurfaceArea = p.SurfaceArea,
+                    BidType = p.BidType
                 })
                 .FirstOrDefaultAsync(cancellationToken);
 

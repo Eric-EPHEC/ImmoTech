@@ -16,5 +16,5 @@ public class Property
     public Agency? Agency { get; set; }
     public List<Photo>? Photos { get; set; }
     public PropertyType Type { get; set; }
-
+    public PropertyBidType BidType { get; set; }
 } 

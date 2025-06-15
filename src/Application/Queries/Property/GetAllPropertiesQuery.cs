@@ -14,6 +14,7 @@ namespace Application.Queries.Property
         public PropertyStatus? Status { get; set; }
         public int? AgencyId { get; set; }
         public PropertyType? PropertyType { get; set; }
+        public PropertyBidType? BidType { get; set; }
 
         // pagination
         public int PageNumber { get; set; } = 1; // 1-based index
@@ -42,6 +43,7 @@ namespace Application.Queries.Property
         public int? AgencyId { get; set; }
         public AgencyResponse Agency { get; set; }
         public List<PhotoResponse> Photos { get; set; }
+        public PropertyBidType BidType { get; set; }
     }
 
 
@@ -88,6 +90,11 @@ namespace Application.Queries.Property
             {
                 query = query.Where(p => p.Type == request.PropertyType.Value);
             }
+
+            if (request.BidType.HasValue)
+            {
+                query = query.Where(p => p.BidType == request.BidType.Value);
+            }
             //Possiblité d'améliorer les performances du filtre en utilisant du full text search.
             var totalCount = await query.CountAsync(cancellationToken);
 
@@ -110,6 +117,7 @@ namespace Application.Queries.Property
                     AgencyId = p.AgencyId,
                     Photos = p.Photos.Select(ph => new PhotoResponse { Id = ph.Id, Url = ph.Url, UploadedAt = ph.UploadedAt, IsMain = ph.IsMain }).ToList(),
                     Agency = p.Agency != null ? new AgencyResponse { Id = p.Agency.Id, Name = p.Agency.Name, ContactEmail = p.Agency.ContactEmail, LogoUrl = p.Agency.LogoUrl } : null,
+                    BidType = p.BidType,
                 })
                 .ToListAsync(cancellationToken);
 

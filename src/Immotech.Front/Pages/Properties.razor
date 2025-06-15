@@ -50,6 +50,11 @@
                     }
                 </select>
                 <input placeholder="Localisation" value="@locationText" @oninput="e => { locationText = e.Value?.ToString(); OnFilterChanged(); }" />
+                <select value="@bidType" @onchange="e => { bidType = string.IsNullOrWhiteSpace(e.Value?.ToString()) ? null : e.Value.ToString(); OnFilterChanged(); }">
+                    <option value="">--Offre--</option>
+                    <option value="Sale">Vente</option>
+                    <option value="Rent">Location</option>
+                </select>
             </div>
         </details>
 
@@ -99,6 +104,7 @@
     private PropertyStatus? status;
     private string? locationText;
     private string? propertyType;
+    private string? bidType;
 
     private CancellationTokenSource? _debounceCts;
 
@@ -127,6 +133,7 @@
         if (Enum.TryParse<PropertyStatus>(q["Status"], out var st)) status = st;
         locationText = q["Location"];
         propertyType = q["PropertyType"];
+        bidType = q["BidType"];
         if (int.TryParse(q["PageNumber"], out var pn) && pn>0) pageNumber = pn;
     }
 
@@ -154,6 +161,7 @@
         if (status.HasValue) qs.Add($"Status={status}");
         if (!string.IsNullOrWhiteSpace(locationText)) qs.Add($"Location={Uri.EscapeDataString(locationText!)}");
         if (!string.IsNullOrWhiteSpace(propertyType)) qs.Add($"PropertyType={Uri.EscapeDataString(propertyType!)}");
+        if (!string.IsNullOrWhiteSpace(bidType)) qs.Add($"BidType={bidType}");
         if (pageNumber>1) qs.Add($"PageNumber={pageNumber}");
         qs.Add($"PageSize={pageSize}");
         var newUri = "/properties" + (qs.Count>0?"?"+string.Join("&",qs):"");
@@ -172,6 +180,7 @@
             if (status.HasValue) queryString.Add($"Status={status}");
             if (!string.IsNullOrWhiteSpace(locationText)) queryString.Add($"Location={Uri.EscapeDataString(locationText!)}");
             if (!string.IsNullOrWhiteSpace(propertyType)) queryString.Add($"PropertyType={Uri.EscapeDataString(propertyType!)}");
+            if (!string.IsNullOrWhiteSpace(bidType)) queryString.Add($"BidType={bidType}");
             queryString.Add($"PageNumber={pageNumber}");
             queryString.Add($"PageSize={pageSize}");
 

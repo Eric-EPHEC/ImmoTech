@@ -19,6 +19,7 @@ public class UpdatePropertyCommand : IRequest<UpdatePropertyResponse>
     public PropertyStatus Status { get; set; }
     public Domain.Entities.PropertyType Type { get; set; }
     public int? AgencyId { get; set; }
+    public PropertyBidType BidType { get; set; } = PropertyBidType.Sale;
 }
 
 public class UpdatePropertyResponse
@@ -54,6 +55,7 @@ public class UpdatePropertyCommandHandler : IRequestHandler<UpdatePropertyComman
         property.Status = request.Status;
         property.Type = request.Type;
         property.AgencyId = request.AgencyId;
+        property.BidType = request.BidType;
 
         await _context.SaveChangesAsync(cancellationToken);
 

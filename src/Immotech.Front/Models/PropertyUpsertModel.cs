@@ -35,5 +35,8 @@ public class PropertyUpsertModel
     [Required]
     public PropertyType Type { get; set; } = PropertyType.House; // default value
 
+    [Required]
+    public PropertyBidType BidType { get; set; } = PropertyBidType.Sale; // default
+
     public int? AgencyId { get; set; }
 } 

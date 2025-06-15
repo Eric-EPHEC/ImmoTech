@@ -17,4 +17,5 @@ public class PropertyDetail
     public int Bedrooms { get; set; }
     public int SurfaceArea { get; set; }
     public PropertyType Type { get; set; }
+    public PropertyBidType BidType { get; set; } // sale or rent
 } 

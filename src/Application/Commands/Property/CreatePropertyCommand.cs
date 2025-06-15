@@ -16,6 +16,7 @@ public class CreatePropertyCommand : IRequest<CreatePropertyResponse>
     public int SurfaceArea { get; set; }
     public Domain.Entities.PropertyType Type { get; set; }
     public int? AgencyId { get; set; }
+    public PropertyBidType BidType { get; set; } = PropertyBidType.Sale;
 }
 
 public class CreatePropertyResponse
@@ -46,7 +47,8 @@ public class CreatePropertyCommandHandler : IRequestHandler<CreatePropertyComman
             Status = PropertyStatus.Available,
             Type = request.Type,
             CreatedDate = DateTimeOffset.UtcNow,
-            AgencyId = request.AgencyId
+            AgencyId = request.AgencyId,
+            BidType = request.BidType
         };
 
         _context.Properties.Add(property);

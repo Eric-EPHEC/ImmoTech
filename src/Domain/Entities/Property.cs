@@ -16,7 +16,7 @@ public class Property
     public int? AgencyId { get; set; }
     public Guid? UserId { get; set; }
 
-    public PropertyBidType BidType { get; set; }
+    public required PropertyBidType BidType { get; set; } = PropertyBidType.Sale; // default sale
 
     // Navigation properties
     public Agency? Agency { get; set; }
