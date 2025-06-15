@@ -21,6 +21,15 @@
     <button class="contrast" @onclick="HandleLogin">Se connecter</button>
 </div>
 
+<hr/>
+<h5>Ou se connecter avec</h5>
+<div class="grid" style="max-width:400px">
+    <!-- Social provider links call API endpoints -->
+    <a class="contrast" href="https://localhost:7261/auth/external/google">Google</a>
+    <a class="contrast" href="https://localhost:7261/auth/external/microsoft">Microsoft</a>
+    <a class="contrast" href="https://localhost:7261/auth/external/facebook">Facebook</a>
+</div>
+
 @code {
     private string email = string.Empty;
     private string password = string.Empty;
