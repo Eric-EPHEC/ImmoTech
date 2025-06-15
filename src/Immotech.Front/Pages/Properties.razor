@@ -47,25 +47,30 @@ else
 
 
     @* List of properties *@
-    <div class="grid">
+    <div style="display:flex;flex-direction:column;gap:1rem;">
         @foreach (var property in properties)
         {
-            <article>
-                <img src="@(GetMainPhoto(property) ?? "images/placeholders/house-placeholder.jpg")" style="width:100%;aspect-ratio:16/9;object-fit:cover;" />
-                <header style="display:flex;justify-content:space-between;align-items:center;">
-                    <h3 style="margin:0;">@property.Title</h3>
-                    @if (!string.IsNullOrWhiteSpace(property.Agency?.LogoUrl))
-                    {
-                        <img src="@property.Agency!.LogoUrl" alt="Logo agence" style="height:32px;" />
-                    }
-                </header>
-                <p class="text-muted">@property.Address.ZipCode @property.Address.City</p>
-                <p><strong>@property.Price.ToString("C0")</strong></p>
-                <p>@property.Bedrooms chambre(s) · @property.SurfaceArea m²</p>
-                <footer style="display:flex;justify-content:flex-end;gap:0.5rem;">
-                    <button class="secondary" @onclick="() => NavigateToDetails(property.Id)">Détails</button>
-                    <button class="contrast" @onclick="() => PromptDelete(property.Id)">Supprimer</button>
-                </footer>
+            <article class="prop-row">
+                <img src="@(GetMainPhoto(property) ?? "images/placeholders/house-placeholder.jpg")"
+                     style="width:180px;height:135px;object-fit:cover;border-radius:4px;" />
+
+                <section style="flex:1;display:flex;flex-direction:column;gap:0.25rem;">
+                    <header style="display:flex;justify-content:space-between;">
+                        <strong>@property.Title</strong>
+                        @if (!string.IsNullOrWhiteSpace(property.Agency?.LogoUrl))
+                        {
+                            <img src="@property.Agency!.LogoUrl" style="height:32px;" />
+                        }
+                    </header>
+
+                    <span>@property.Price.ToString("C0") · @property.Bedrooms ch · @property.SurfaceArea m²</span>
+                    <span class="text-muted">@property.Address.ZipCode @property.Address.City</span>
+
+                    <footer style="margin-top:auto;display:flex;gap:0.5rem;">
+                        <button class="secondary" @onclick="() => NavigateToDetails(property.Id)">Détails</button>
+                        <button class="contrast"  @onclick="() => PromptDelete(property.Id)">Supprimer</button>
+                    </footer>
+                </section>
             </article>
         }
     </div>
