@@ -1,5 +1,8 @@
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.JSInterop;
+using System.Net.Http;
+using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.Logging;
 
 namespace Immotech.Front.Services;
 
@@ -7,10 +10,10 @@ namespace Immotech.Front.Services;
 public class AuthService
 {
     private readonly IJSRuntime _js;
-    private readonly AuthenticationStateProvider _authStateProvider;
+    private readonly TokenAuthenticationStateProvider _authStateProvider;
 
     // We inject the JS runtime to interact with localStorage and the auth state provider to notify it of changes.
-    public AuthService(IJSRuntime js, AuthenticationStateProvider authStateProvider)
+    public AuthService(IJSRuntime js, TokenAuthenticationStateProvider authStateProvider)
     {
         _js = js;
         _authStateProvider = authStateProvider;
@@ -19,25 +22,36 @@ public class AuthService
     // This method checks if the user is authenticated by looking for a token in local storage.
     public async Task<bool> IsAuthenticatedAsync()
     {
-        var token = await _js.InvokeAsync<string?>("localStorage.getItem", "authToken");
-        return !string.IsNullOrWhiteSpace(token);
+        return _authStateProvider.GetAuthenticationStateAsync()
+            .ContinueWith(t => t.Result.User.Identity?.IsAuthenticated ?? false);
     }
     
     // This method is called after a user logs in successfully.
     public async Task OnLoginAsync(string token)
     {
-        // We store the token in local storage.
-        await _js.InvokeVoidAsync("localStorage.setItem", "authToken", token);
+        
         // We notify the auth state provider that the user is now authenticated.
-        ((CustomAuthStateProvider)_authStateProvider).NotifyUserAuthentication(token);
+        ((CookieAuthenticationStateProvider)_authStateProvider).NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
     }
 
     // This method is called to log the user out.
     public async Task OnLogoutAsync()
     {
-        // We remove the token from local storage.
-        await _js.InvokeVoidAsync("localStorage.removeItem", "authToken");
         // We notify the auth state provider that the user has logged out.
-        ((CustomAuthStateProvider)_authStateProvider).NotifyUserLogout();
+        ((CookieAuthenticationStateProvider)_authStateProvider).NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
     }
 } 
+
+public class CookieAuthenticationStateProvider : TokenAuthenticationStateProvider, IDisposable
+{
+    public CookieAuthenticationStateProvider(
+        IJSRuntime js,
+        NavigationManager nav,
+        IHttpClientFactory clientFactory,
+        ILogger<CookieAuthenticationStateProvider> logger)
+    {
+        // sample code unchanged
+    }
+
+    // rest of the sample class…
+}
