@@ -1,9 +1,112 @@
 @page "/profile"
 
-@inject Blazored.Toast.Services.IToastService Toast
+@using Immotech.Front.Models
+@using Blazored.Toast.Services
 @inject HttpClient Http
+@inject IToastService Toast
+@inject NavigationManager Nav
+@inject Immotech.Front.Services.AuthService Auth
+@inject IJSRuntime JS
 
-<div class="container mx-auto">
-    <h1>Mon profil</h1>
-    <p>Page de profil simple en cours de construction.</p>
-</div> 
+<AuthorizeView>
+    <Authorized>
+        <div class="container mx-auto">
+            <section class="profile-header flex items-center gap-4 mb-6">
+                <i class="bi bi-person-circle text-5xl"></i>
+                <div>
+                    <h2 class="m-0">@userEmail</h2>
+                    <small class="text-muted">@userId</small>
+                </div>
+            </section>
+
+            <h3 class="mb-2">Mes annonces</h3>
+            <LoadingOverlay IsLoading="isBusy" />
+
+            @if(isBusy && userProperties is null)
+            {
+                <!-- overlay shows spinner -->
+            }
+            else if(userProperties is null || !userProperties.Any())
+            {
+                <p>Vous n'avez publié aucune annonce pour l'instant.</p>
+                <a class="btn contrast" href="/properties/create">Publier ma première annonce</a>
+            }
+            else
+            {
+                <div class="flex flex-col gap-3">
+                    @foreach(var p in userProperties)
+                    {
+                        <article class="prop-row flex gap-4 items-start">
+                            <img src="@(GetMainPhoto(p) ?? "images/placeholders/house-placeholder.jpg")" class="w-[120px] h-[90px] object-cover rounded" />
+                            <section class="flex-1 flex flex-col gap-1">
+                                <header class="flex justify-between">
+                                    <strong>@p.Title</strong>
+                                    <span class="text-muted">@p.Status</span>
+                                </header>
+                                <span>@p.Price.ToString("C0") · @p.Bedrooms ch · @p.SurfaceArea m²</span>
+                                <footer class="mt-auto flex gap-2">
+                                    <button class="secondary" @onclick="() => Nav.NavigateTo($"/properties/{p.Id}/edit")">Modifier</button>
+                                    <button class="contrast" @onclick="() => Nav.NavigateTo($"/properties/{p.Id}")">Voir</button>
+                                </footer>
+                            </section>
+                        </article>
+                    }
+                </div>
+            }
+        </div>
+    </Authorized>
+    <NotAuthorized>
+        <div class="container mx-auto text-center">
+            <h2>Accès refusé</h2>
+            <p>Veuillez vous connecter pour accéder à votre profil.</p>
+            <a class="btn contrast" href="/login">Se connecter</a>
+        </div>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    private string? userEmail;
+    private string? userId;
+    private List<Property>? userProperties;
+    private bool isBusy;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // ensure authenticated
+        if(!await Auth.IsAuthenticatedAsync())
+        {
+            Nav.NavigateTo("/login", true);
+            return;
+        }
+
+        await LoadUserInfo();
+        await LoadUserProperties();
+    }
+
+    private async Task LoadUserInfo()
+    {
+        var token = await JS.InvokeAsync<string?>("localStorage.getItem", "authToken");
+        if(string.IsNullOrWhiteSpace(token)) return;
+        var handler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
+        var jwt = handler.ReadJwtToken(token);
+        userEmail = jwt.Claims.FirstOrDefault(c => c.Type=="email")?.Value;
+        userId = jwt.Claims.FirstOrDefault(c => c.Type=="sub")?.Value;
+    }
+
+    private async Task LoadUserProperties()
+    {
+        try
+        {
+            isBusy = true;
+            var response = await Http.GetFromJsonAsync<PropertyListResponse>("property?PageNumber=1&PageSize=50");
+            userProperties = response?.Properties ?? [];
+        }
+        catch(Exception ex)
+        {
+            Toast.ShowError($"Erreur chargement: {ex.Message}");
+        }
+        finally { isBusy = false; }
+    }
+
+    private static string? GetMainPhoto(Property p) => p.Photos?.FirstOrDefault(ph => ph.IsMain)?.Url ?? p.Photos?.FirstOrDefault()?.Url;
+} 

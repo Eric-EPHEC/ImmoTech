@@ -1,0 +1,12 @@
+.profile-header i{
+    color:#6c757d;
+}
+
+/* card row style reused from prop-row in list */
+.prop-row{
+    display:flex;
+    background:#fff;
+    padding:0.75rem;
+    border:1px solid #e5e7eb;
+    border-radius:6px;
+} 

@@ -14,9 +14,6 @@ webApplicationBuilder.Services.AddSwaggerGen();
 // Add Infrastructure services
 webApplicationBuilder.Services.AddInfrastructure(webApplicationBuilder.Configuration);
 
-// bind Jwt settings
-webApplicationBuilder.Services.Configure<Immotech.Api.Common.JwtSettings>(webApplicationBuilder.Configuration.GetSection("Jwt"));
-webApplicationBuilder.Services.AddScoped<Immotech.Api.Common.IJwtTokenGenerator, Immotech.Api.Common.JwtTokenGenerator>();
 
 webApplicationBuilder.Services.AddIdentityApiEndpoints<Domain.Entities.User>(
             )
