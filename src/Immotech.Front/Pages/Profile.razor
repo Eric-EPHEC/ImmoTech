@@ -12,7 +12,7 @@
     <Authorized>
         <div class="container mx-auto">
             <section class="profile-header flex items-center gap-4 mb-6">
-                <i class="bi bi-person-circle text-5xl"></i>
+                <i class="bi bi-person-circle text-5xl text-gray-500"></i>
                 <div>
                     <h2 class="m-0">@userEmail</h2>
                     <small class="text-muted">@userId</small>
@@ -36,7 +36,7 @@
                 <div class="flex flex-col gap-3">
                     @foreach(var p in userProperties)
                     {
-                        <article class="prop-row flex gap-4 items-start">
+                        <article class="flex gap-4 items-start bg-white p-3 border border-gray-200 rounded">
                             <img src="@(GetMainPhoto(p) ?? "images/placeholders/house-placeholder.jpg")" class="w-[120px] h-[90px] object-cover rounded" />
                             <section class="flex-1 flex flex-col gap-1">
                                 <header class="flex justify-between">
@@ -45,8 +45,14 @@
                                 </header>
                                 <span>@p.Price.ToString("C0") · @p.Bedrooms ch · @p.SurfaceArea m²</span>
                                 <footer class="mt-auto flex gap-2">
-                                    <button class="secondary" @onclick="() => Nav.NavigateTo($"/properties/{p.Id}/edit")">Modifier</button>
-                                    <button class="contrast" @onclick="() => Nav.NavigateTo($"/properties/{p.Id}")">Voir</button>
+                                    <NavLink class="secondary"
+                                             href="@($"/properties/{p.Id}/edit")">
+                                        Modifier
+                                    </NavLink>
+                                    <NavLink class="contrast"
+                                             href="@($"/properties/{p.Id}")">
+                                        Voir
+                                    </NavLink>
                                 </footer>
                             </section>
                         </article>
