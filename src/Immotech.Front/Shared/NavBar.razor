@@ -1,4 +1,5 @@
 @* Top navigation bar *@
+@using Microsoft.AspNetCore.Components.Authorization
 <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm py-2">
     <div class="container-fluid">
         <a class="navbar-brand fw-bold text-primary" href="/">
@@ -22,8 +23,17 @@
 
             <ul class="navbar-nav align-items-lg-center gap-2">
                 <!-- Links related to account -->
-                <li class="nav-item"><a class="nav-link" href="/login"><i class="bi bi-person-circle"></i> Mon Immotech</a></li>
-                <li class="nav-item"><a class="nav-link" href="/logout">Se déconnecter</a></li>
+                <AuthorizeView>
+                    <Authorized>
+                        <li class="nav-item"><a class="nav-link" href="/profile"><i class="bi bi-person-circle"></i> Mon Immotech</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/logout">Se déconnecter</a></li>
+                    </Authorized>
+                    <NotAuthorized>
+                        <li class="nav-item"><a class="nav-link" href="/login">Se connecter</a></li>
+                        <li class="nav-item"><a class="nav-link contrast" href="/register">Créer un compte</a></li>
+                    </NotAuthorized>
+                </AuthorizeView>
+
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="langDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">FR</a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="langDropdown">

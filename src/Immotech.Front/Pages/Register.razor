@@ -1,0 +1,60 @@
+@page "/register"
+
+@using Immotech.Front.Models
+@using System.Net.Http.Json
+@inject HttpClient Http
+@inject NavigationManager Nav
+@inject IJSRuntime JS
+@inject Blazored.Toast.Services.IToastService Toast
+
+<h1>Créer un compte</h1>
+
+<EditForm Model="model" OnValidSubmit="HandleRegister">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="grid" style="max-width:400px">
+        <label>Email
+            <input @bind="model.Email" type="email" />
+        </label>
+        <label>Mot de passe
+            <input @bind="model.Password" type="password" />
+        </label>
+        <label>Confirmer le mot de passe
+            <input @bind="model.ConfirmPassword" type="password" />
+        </label>
+        <button class="contrast" type="submit">S'inscrire</button>
+    </div>
+</EditForm>
+
+@code {
+    private readonly RegisterModel model = new();
+
+    private async Task HandleRegister()
+    {
+        try
+        {
+            var res = await Http.PostAsJsonAsync("auth/register", new { model.Email, Password = model.Password });
+            if (!res.IsSuccessStatusCode)
+            {
+                var msg = await res.Content.ReadAsStringAsync();
+                Toast.ShowError($"Erreur: {msg}");
+                return;
+            }
+
+            var payload = await res.Content.ReadFromJsonAsync<AuthResponse>();
+            if (payload is not null)
+            {
+                await JS.InvokeVoidAsync("localStorage.setItem", "authToken", payload.Token);
+                Toast.ShowSuccess("Compte créé et connecté");
+                Nav.NavigateTo("/");
+            }
+        }
+        catch(Exception ex)
+        {
+            Toast.ShowError(ex.Message);
+        }
+    }
+
+    private record AuthResponse(string Token);
+} 
