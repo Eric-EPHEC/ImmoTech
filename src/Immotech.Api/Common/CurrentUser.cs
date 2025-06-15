@@ -34,5 +34,4 @@ public sealed class CurrentUser : ICurrentUser
 
     public int? AgencyId => null;
 
-    public bool IsInRole(string role) => User?.IsInRole(role) ?? false;
 }
