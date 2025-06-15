@@ -14,6 +14,7 @@ public class CreatePropertyCommand : IRequest<CreatePropertyResponse>
     public decimal Price { get; set; }
     public int Bedrooms { get; set; }
     public int SurfaceArea { get; set; }
+    public Domain.Entities.PropertyType Type { get; set; }
     public int? AgencyId { get; set; }
 }
 
@@ -43,6 +44,7 @@ public class CreatePropertyCommandHandler : IRequestHandler<CreatePropertyComman
             Bedrooms = request.Bedrooms,
             SurfaceArea = request.SurfaceArea,
             Status = PropertyStatus.Available,
+            Type = request.Type,
             CreatedDate = DateTimeOffset.UtcNow,
             AgencyId = request.AgencyId
         };

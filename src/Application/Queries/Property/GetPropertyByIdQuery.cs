@@ -20,6 +20,7 @@ namespace Application.Queries.Property
         public string Location { get; set; }
         public decimal Price { get; set; }
         public PropertyStatus Status { get; set; }
+        public Domain.Entities.PropertyType PropertyType { get; set; }
         public DateTimeOffset CreatedDate { get; set; }
         public int? AgencyId { get; set; }
         public AgencyResponse Agency { get; set; }
@@ -67,6 +68,7 @@ namespace Application.Queries.Property
                     Location = p.Location,
                     Price = p.Price,
                     Status = p.Status,
+                    PropertyType = p.Type,
                     CreatedDate = p.CreatedDate,
                     AgencyId = p.AgencyId,
                     Agency = p.Agency != null ? new AgencyResponse

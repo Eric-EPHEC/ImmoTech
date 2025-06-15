@@ -17,6 +17,7 @@ public class UpdatePropertyCommand : IRequest<UpdatePropertyResponse>
     public int Bedrooms { get; set; }
     public int SurfaceArea { get; set; }
     public PropertyStatus Status { get; set; }
+    public Domain.Entities.PropertyType Type { get; set; }
     public int? AgencyId { get; set; }
 }
 
@@ -51,6 +52,7 @@ public class UpdatePropertyCommandHandler : IRequestHandler<UpdatePropertyComman
         property.Bedrooms = request.Bedrooms;
         property.SurfaceArea = request.SurfaceArea;
         property.Status = request.Status;
+        property.Type = request.Type;
         property.AgencyId = request.AgencyId;
 
         await _context.SaveChangesAsync(cancellationToken);

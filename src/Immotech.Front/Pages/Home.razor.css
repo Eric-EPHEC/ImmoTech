@@ -1,6 +1,24 @@
 .hero {
     min-height: 90vh;
     background: url('/images/hero-bg.svg') no-repeat bottom center / contain;
+    position: relative; /* allow pseudo overlay */
+}
+
+/* translucent Immotech logo overlay */
+.hero::after {
+    content: "";
+    position: absolute;
+    inset: 0; /* cover full section */
+    background: url('/images/ImmotechLogo.png') no-repeat center center / 100% auto;
+    opacity: 0.35; /* 35% transparency */
+    pointer-events: none; /* let clicks pass through */
+    z-index: 0;
+}
+
+/* ensure content stays above overlay */
+.hero > * {
+    position: relative;
+    z-index: 1;
 }
 
 .brand {
@@ -27,4 +45,10 @@
 .nav-tabs .nav-item::before,
 .nav-tabs .nav-item::after {
     content: none;
+}
+
+/* Remove default list bullet from nav items */
+.nav-tabs .nav-item {
+    list-style-type: none; /* Hide the marker */
+    padding-left: 0;      /* Align properly */
 } 

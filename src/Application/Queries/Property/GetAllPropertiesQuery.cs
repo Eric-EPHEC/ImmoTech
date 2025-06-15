@@ -13,6 +13,7 @@ namespace Application.Queries.Property
         public string? Location { get; set; }
         public PropertyStatus? Status { get; set; }
         public int? AgencyId { get; set; }
+        public Domain.Entities.PropertyType? PropertyType { get; set; }
 
         // pagination
         public int PageNumber { get; set; } = 1; // 1-based index
@@ -36,6 +37,7 @@ namespace Application.Queries.Property
         public int Bedrooms { get; set; }
         public decimal SurfaceArea { get; set; }
         public PropertyStatus Status { get; set; }
+        public Domain.Entities.PropertyType PropertyType { get; set; }
         public DateTimeOffset CreatedDate { get; set; }
         public int? AgencyId { get; set; }
         public AgencyResponse Agency { get; set; }
@@ -81,6 +83,11 @@ namespace Application.Queries.Property
             {
                 query = query.Where(p => p.AgencyId == request.AgencyId.Value);
             }
+
+            if (request.PropertyType.HasValue)
+            {
+                query = query.Where(p => p.Type == request.PropertyType.Value);
+            }
             //Possiblité d'améliorer les performances du filtre en utilisant du full text search.
             var totalCount = await query.CountAsync(cancellationToken);
 
@@ -98,6 +105,7 @@ namespace Application.Queries.Property
                     Bedrooms = p.Bedrooms,
                     SurfaceArea = p.SurfaceArea,
                     Status = p.Status,
+                    PropertyType = p.Type,
                     CreatedDate = p.CreatedDate,
                     AgencyId = p.AgencyId,
                     Photos = p.Photos.Select(ph => new PhotoResponse { Id = ph.Id, Url = ph.Url, UploadedAt = ph.UploadedAt, IsMain = ph.IsMain }).ToList(),

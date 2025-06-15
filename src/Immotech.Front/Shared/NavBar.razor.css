@@ -2,7 +2,14 @@
     font-size: 1.75rem;
 }
 
-.logo-house {
-    font-size: 1.3rem;
+.logo-img {
+    width: auto;
+    height: 1.5rem; /* fallback */
     margin: 0 .15rem;
-} 
+}
+
+/* old emoji class no longer used */
+-.logo-house {
+-    font-size: 1.3rem;
+-    margin: 0 .15rem;
+-} 
