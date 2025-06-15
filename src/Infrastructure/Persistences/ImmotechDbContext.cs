@@ -76,6 +76,10 @@ namespace Infrastructure.Persistences
                       .HasConversion<string>()
                       .HasMaxLength(10)
                       .HasDefaultValue(PropertyBidType.Sale);
+
+                entity.Property(e => e.Status)
+                      .HasConversion<string>()
+                      .HasMaxLength(20);
             });
 
 

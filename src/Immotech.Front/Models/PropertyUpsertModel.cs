@@ -39,4 +39,7 @@ public class PropertyUpsertModel
     public PropertyBidType BidType { get; set; } = PropertyBidType.Sale; // default
 
     public int? AgencyId { get; set; }
+
+    [Required]
+    public PropertyStatus Status { get; set; } = PropertyStatus.Available; // default
 } 

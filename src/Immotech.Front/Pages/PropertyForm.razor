@@ -6,6 +6,7 @@
 @inject IToastService Toast
 @inject NavigationManager Nav
 
+
 @* Form for creating or editing a property *@
 <EditForm Model="model" OnValidSubmit="SaveAsync">
     <DataAnnotationsValidator />
@@ -140,6 +141,7 @@
             model.Location = existing.Location;
             model.AgencyId = existing.AgencyId;
             model.BidType = existing.BidType;
+            model.Status = existing.Status;
         }
         finally { isBusy = false; }
     }
