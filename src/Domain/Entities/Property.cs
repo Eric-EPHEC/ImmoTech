@@ -16,6 +16,8 @@ public class Property
     public int? AgencyId { get; set; }
     public Guid? UserId { get; set; }
 
+    public PropertyBidType BidType { get; set; }
+
     // Navigation properties
     public Agency? Agency { get; set; }
     public ICollection<Photo> Photos { get; set; } = [];
@@ -46,3 +48,10 @@ public enum PropertyType
         Hotel,
         Other
     }
+
+public enum PropertyBidType
+    {
+        Sale,
+        Rent,
+    }
+
