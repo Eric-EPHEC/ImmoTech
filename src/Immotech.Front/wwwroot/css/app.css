@@ -141,3 +141,16 @@ code {
     border:1px solid #d0d0d0;
     border-radius:6px;
 }
+
+/* A reusable class for visually hiding elements while keeping them accessible to screen readers */
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}

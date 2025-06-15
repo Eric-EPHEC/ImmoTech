@@ -15,73 +15,74 @@
 <LoadingOverlay IsLoading="@isBusy" />
 <ConfirmDialog @ref="confirmDeleteDlg" Title="Supprimer" Message="Supprimer ce bien ?" Closed="OnDeleteConfirmed" />
 
-<h2 class="mb-3">Liste des biens</h2>
+<div class="container mx-auto">
+    <h2 class="mb-3">Liste des biens</h2>
 
-@if(isBusy && properties is null)
-{
-    <!-- data loading handled by overlay -->
-}
-else if (properties is null || !properties.Any())
-{
-    <p>Aucun bien trouvé.</p>
-}
-else
-{
-    @* Filter bar *@
-    <details open style="margin-bottom:1rem;">
-        <summary>Filtres</summary>
-        <div class="grid" style="grid-template-columns: repeat(auto-fill,minmax(140px,1fr));gap:0.5rem; margin-top:0.5rem;">
-            <input placeholder="Prix min"    type="number" value="@minPrice?.ToString()" @oninput="e => { minPrice = string.IsNullOrWhiteSpace(e.Value?.ToString()) ? null : decimal.Parse(e.Value!.ToString()!); OnFilterChanged(); }" />
-            <input placeholder="Prix max"    type="number" value="@maxPrice?.ToString()" @oninput="e => { maxPrice = string.IsNullOrWhiteSpace(e.Value?.ToString()) ? null : decimal.Parse(e.Value!.ToString()!); OnFilterChanged(); }" />
-            <input placeholder="Chambres"    type="number" value="@minBedrooms" @oninput="e => { minBedrooms = string.IsNullOrWhiteSpace(e.Value?.ToString()) ? null : int.Parse(e.Value!.ToString()!); OnFilterChanged(); }" />
-            <select value="@status" @onchange="e => { status = string.IsNullOrWhiteSpace(e.Value?.ToString()) ? null : Enum.Parse<PropertyStatus>(e.Value!.ToString()!); OnFilterChanged(); }">
-                <option value="">--Statut--</option>
-                @foreach(var st in Enum.GetValues<PropertyStatus>())
-                {
-                    <option value="@st" selected="@(status==st)">@st</option>
-                }
-            </select>
-            <input placeholder="Localisation" value="@locationText" @oninput="e => { locationText = e.Value?.ToString(); OnFilterChanged(); }" />
+    @if(isBusy && properties is null)
+    {
+        <!-- data loading handled by overlay -->
+    }
+    else if (properties is null || !properties.Any())
+    {
+        <p>Aucun bien trouvé.</p>
+    }
+    else
+    {
+        @* Filter bar *@
+        <details open class="mb-4">
+            <summary>Filtres</summary>
+            <div class="grid" style="grid-template-columns: repeat(auto-fill,minmax(140px,1fr));gap:0.5rem; margin-top:0.5rem;">
+                <input placeholder="Prix min"    type="number" value="@minPrice?.ToString()" @oninput="e => { minPrice = string.IsNullOrWhiteSpace(e.Value?.ToString()) ? null : decimal.Parse(e.Value!.ToString()!); OnFilterChanged(); }" />
+                <input placeholder="Prix max"    type="number" value="@maxPrice?.ToString()" @oninput="e => { maxPrice = string.IsNullOrWhiteSpace(e.Value?.ToString()) ? null : decimal.Parse(e.Value!.ToString()!); OnFilterChanged(); }" />
+                <input placeholder="Chambres"    type="number" value="@minBedrooms" @oninput="e => { minBedrooms = string.IsNullOrWhiteSpace(e.Value?.ToString()) ? null : int.Parse(e.Value!.ToString()!); OnFilterChanged(); }" />
+                <select value="@status" @onchange="e => { status = string.IsNullOrWhiteSpace(e.Value?.ToString()) ? null : Enum.Parse<PropertyStatus>(e.Value!.ToString()!); OnFilterChanged(); }">
+                    <option value="">--Statut--</option>
+                    @foreach(var st in Enum.GetValues<PropertyStatus>())
+                    {
+                        <option value="@st" selected="@(status==st)">@st</option>
+                    }
+                </select>
+                <input placeholder="Localisation" value="@locationText" @oninput="e => { locationText = e.Value?.ToString(); OnFilterChanged(); }" />
+            </div>
+        </details>
+
+        @* List of properties *@
+        <div class="flex flex-col gap-4">
+            @foreach (var property in properties)
+            {
+                <article class="prop-row">
+                    <img src="@(GetMainPhoto(property) ?? "images/placeholders/house-placeholder.jpg")"
+                         class="w-[180px] h-[135px] object-cover rounded" />
+
+                    <section class="flex-1 flex flex-col gap-1">
+                        <header class="flex justify-between">
+                            <strong>@property.Title</strong>
+                            @if (!string.IsNullOrWhiteSpace(property.Agency?.LogoUrl))
+                            {
+                                <img src="@property.Agency!.LogoUrl" class="h-8" />
+                            }
+                        </header>
+
+                        <span>@property.Price.ToString("C0") · @property.Bedrooms ch · @property.SurfaceArea m²</span>
+                        <span class="text-muted">@property.Address.ZipCode @property.Address.City</span>
+
+                        <footer class="mt-auto flex gap-2">
+                            <button class="secondary" @onclick="() => NavigateToDetails(property.Id)">Détails</button>
+                            <button class="contrast"  @onclick="() => PromptDelete(property.Id)">Supprimer</button>
+                        </footer>
+                    </section>
+                </article>
+            }
         </div>
-    </details>
 
-
-    @* List of properties *@
-    <div style="display:flex;flex-direction:column;gap:1rem;">
-        @foreach (var property in properties)
-        {
-            <article class="prop-row">
-                <img src="@(GetMainPhoto(property) ?? "images/placeholders/house-placeholder.jpg")"
-                     style="width:180px;height:135px;object-fit:cover;border-radius:4px;" />
-
-                <section style="flex:1;display:flex;flex-direction:column;gap:0.25rem;">
-                    <header style="display:flex;justify-content:space-between;">
-                        <strong>@property.Title</strong>
-                        @if (!string.IsNullOrWhiteSpace(property.Agency?.LogoUrl))
-                        {
-                            <img src="@property.Agency!.LogoUrl" style="height:32px;" />
-                        }
-                    </header>
-
-                    <span>@property.Price.ToString("C0") · @property.Bedrooms ch · @property.SurfaceArea m²</span>
-                    <span class="text-muted">@property.Address.ZipCode @property.Address.City</span>
-
-                    <footer style="margin-top:auto;display:flex;gap:0.5rem;">
-                        <button class="secondary" @onclick="() => NavigateToDetails(property.Id)">Détails</button>
-                        <button class="contrast"  @onclick="() => PromptDelete(property.Id)">Supprimer</button>
-                    </footer>
-                </section>
-            </article>
-        }
-    </div>
-
-    @* Pagination *@
-    <nav style="margin-top:1rem; display:flex; gap:0.5rem; justify-content:center;">
-        <button class="secondary" disabled="@(pageNumber==1)" @onclick="() => ChangePage(-1)">Précédent</button>
-        <span>Page @pageNumber / @((int)Math.Ceiling(totalCount/(double)pageSize))</span>
-        <button class="secondary" disabled="@(pageNumber*pageSize>=totalCount)" @onclick="() => ChangePage(1)">Suivant</button>
-    </nav>
-}
+        @* Pagination *@
+        <nav class="mt-4 flex gap-2 justify-center">
+            <button class="secondary" disabled="@(pageNumber==1)" @onclick="() => ChangePage(-1)">Précédent</button>
+            <span>Page @pageNumber / @((int)Math.Ceiling(totalCount/(double)pageSize))</span>
+            <button class="secondary" disabled="@(pageNumber*pageSize>=totalCount)" @onclick="() => ChangePage(1)">Suivant</button>
+        </nav>
+    }
+</div>
 
 @code {
     // filter state

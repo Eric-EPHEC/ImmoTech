@@ -1,30 +1,43 @@
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.JSInterop;
 
 namespace Immotech.Front.Services;
 
-// Simple client-side auth helper. Checks if a token is stored in localStorage.
+// This service manages the authentication state of the user.
 public class AuthService
 {
     private readonly IJSRuntime _js;
+    private readonly AuthenticationStateProvider _authStateProvider;
 
-    // inject JS runtime so we can talk to localStorage
-    public AuthService(IJSRuntime js)
+    // We inject the JS runtime to interact with localStorage and the auth state provider to notify it of changes.
+    public AuthService(IJSRuntime js, AuthenticationStateProvider authStateProvider)
     {
         _js = js;
+        _authStateProvider = authStateProvider;
     }
 
-    // quick check used by pages to know if the user is logged in
+    // This method checks if the user is authenticated by looking for a token in local storage.
     public async Task<bool> IsAuthenticatedAsync()
     {
-        // read token from localStorage
         var token = await _js.InvokeAsync<string?>("localStorage.getItem", "authToken");
-        // authenticated if we have any non-empty token
         return !string.IsNullOrWhiteSpace(token);
     }
+    
+    // This method is called after a user logs in successfully.
+    public async Task OnLoginAsync(string token)
+    {
+        // We store the token in local storage.
+        await _js.InvokeVoidAsync("localStorage.setItem", "authToken", token);
+        // We notify the auth state provider that the user is now authenticated.
+        ((CustomAuthStateProvider)_authStateProvider).NotifyUserAuthentication(token);
+    }
 
-    // clear token from storage -> user becomes anonymous
+    // This method is called to log the user out.
     public async Task LogoutAsync()
     {
+        // We remove the token from local storage.
         await _js.InvokeVoidAsync("localStorage.removeItem", "authToken");
+        // We notify the auth state provider that the user has logged out.
+        ((CustomAuthStateProvider)_authStateProvider).NotifyUserLogout();
     }
 } 

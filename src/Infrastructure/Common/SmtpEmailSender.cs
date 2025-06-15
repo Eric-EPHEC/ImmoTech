@@ -14,9 +14,13 @@ public class SmtpEmailSender : IEmailSender
         _logger = logger;
     }
 
-    public async Task SendEmailAsync(string to, string subject, string body, CancellationToken cancellationToken = default)
+    public Task SendEmailAsync(string to, string subject, string body, CancellationToken cancellationToken = default)
     {
-      _logger.LogInformation("Sending email to {Email}", to);
+        // log email sending. Replace with actual SMTP logic later.
+        _logger.LogInformation("Sending email to {Email}", to);
+
+        // Return a completed task to satisfy the contract without compiler warning.
+        return Task.CompletedTask;
     }
 }
 

@@ -7,25 +7,27 @@
 @inject IJSRuntime JS
 @inject Blazored.Toast.Services.IToastService Toast
 
-<h1>Créer un compte</h1>
+<div class="container mx-auto flex flex-col items-center">
+    <h1>Créer un compte</h1>
 
-<EditForm Model="model" OnValidSubmit="HandleRegister">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
+    <EditForm Model="model" OnValidSubmit="HandleRegister">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
 
-    <div class="grid" style="max-width:400px">
-        <label>Email
-            <input @bind="model.Email" type="email" />
-        </label>
-        <label>Mot de passe
-            <input @bind="model.Password" type="password" />
-        </label>
-        <label>Confirmer le mot de passe
-            <input @bind="model.ConfirmPassword" type="password" />
-        </label>
-        <button class="contrast" type="submit">S'inscrire</button>
-    </div>
-</EditForm>
+        <div class="grid" style="max-width:400px">
+            <label>Email
+                <input @bind="model.Email" type="email" />
+            </label>
+            <label>Mot de passe
+                <input @bind="model.Password" type="password" />
+            </label>
+            <label>Confirmer le mot de passe
+                <input @bind="model.ConfirmPassword" type="password" />
+            </label>
+            <button class="contrast" type="submit">S'inscrire</button>
+        </div>
+    </EditForm>
+</div>
 
 @code {
     private readonly RegisterModel model = new();

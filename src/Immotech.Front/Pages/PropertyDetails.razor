@@ -10,56 +10,58 @@
 @* Detailed view of a single property *@
 <LoadingOverlay IsLoading="@isBusy" />
 
-@if (isBusy && detail is null)
-{
-    <!-- overlay handles spinner -->
-}
-else if (detail is null)
-{
-    <p>Bien introuvable.</p>
-}
-else
-{
-    <article>
-        <header style="display:flex;justify-content:space-between;align-items:center;">
-            <h2>@detail.Title</h2>
-            @if (!string.IsNullOrWhiteSpace(detail.Agency?.LogoUrl))
-            {
-                <img src="@detail.Agency!.LogoUrl" style="height:40px;" />
-            }
-        </header>
-
-        @if(detail.Photos?.Any() == true)
-        {
-            <img src="@(GetMainPhoto(detail) ?? detail.Photos.First().Url)" style="width:100%;max-height:400px;object-fit:cover;border-radius:0.5rem;" />
-        }
-
-        <section>
-            <h3>Description</h3>
-            <p>@detail.Description</p>
-        </section>
-        <section style="display:flex;gap:2rem;flex-wrap:wrap;">
-            <div><strong>Adresse:</strong> @detail.Address.Street, @detail.Address.ZipCode @detail.Address.City</div>
-            <div><strong>Localité:</strong> @detail.Location</div>
-            <div><strong>Prix:</strong> @detail.Price.ToString("C0")</div>
-            <div><strong>Status:</strong> @detail.Status</div>
-            <div><strong>Date création:</strong> @detail.CreatedDate.ToLocalTime().ToString("d")</div>
-        </section>
-        @if(detail.Photos?.Count > 1)
-        {
-            <h3>Galerie</h3>
-            <div class="grid" style="grid-template-columns: repeat(auto-fill,minmax(200px,1fr));gap:1rem;">
-                @foreach(var p in detail.Photos.Skip(1))
+<div class="container mx-auto">
+    @if (isBusy && detail is null)
+    {
+        <!-- overlay handles spinner -->
+    }
+    else if (detail is null)
+    {
+        <p>Bien introuvable.</p>
+    }
+    else
+    {
+        <article class="space-y-4">
+            <header class="flex justify-between items-center">
+                <h2>@detail.Title</h2>
+                @if (!string.IsNullOrWhiteSpace(detail.Agency?.LogoUrl))
                 {
-                    <img src="@p.Url" style="width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:0.25rem;" />
+                    <img src="@detail.Agency!.LogoUrl" class="h-10" />
                 }
-            </div>
-        }
-        <footer style="margin-top:1rem;">
-            <button class="secondary" @onclick="Back">Retour</button>
-        </footer>
-    </article>
-}
+            </header>
+
+            @if(detail.Photos?.Any() == true)
+            {
+                <img src="@(GetMainPhoto(detail) ?? detail.Photos.First().Url)" class="w-full max-h-[400px] object-cover rounded" />
+            }
+
+            <section>
+                <h3>Description</h3>
+                <p>@detail.Description</p>
+            </section>
+            <section class="flex gap-8 flex-wrap">
+                <div><strong>Adresse:</strong> @detail.Address.Street, @detail.Address.ZipCode @detail.Address.City</div>
+                <div><strong>Localité:</strong> @detail.Location</div>
+                <div><strong>Prix:</strong> @detail.Price.ToString("C0")</div>
+                <div><strong>Status:</strong> @detail.Status</div>
+                <div><strong>Date création:</strong> @detail.CreatedDate.ToLocalTime().ToString("d")</div>
+            </section>
+            @if(detail.Photos?.Count > 1)
+            {
+                <h3>Galerie</h3>
+                <div class="grid" style="grid-template-columns: repeat(auto-fill,minmax(200px,1fr));gap:1rem;">
+                    @foreach(var p in detail.Photos.Skip(1))
+                    {
+                        <img src="@p.Url" class="w-full aspect-video object-cover rounded" />
+                    }
+                </div>
+            }
+            <footer class="mt-4">
+                <button class="secondary" @onclick="Back">Retour</button>
+            </footer>
+        </article>
+    }
+</div>
 
 @code {
     [Parameter] public Guid Id { get; set; }

@@ -8,7 +8,6 @@
 }
 
 .search-box {
-    max-width: 640px;
     width: 100%;
 }
 
@@ -22,4 +21,10 @@
 
 .map-link {
     font-size: .9rem;
+}
+
+/* Remove unwanted list markers from the tab navigation */
+.nav-tabs .nav-item::before,
+.nav-tabs .nav-item::after {
+    content: none;
 } 

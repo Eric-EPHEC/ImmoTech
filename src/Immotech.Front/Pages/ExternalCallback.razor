@@ -1,29 +1,39 @@
 @page "/external-callback"
 
+@using Microsoft.AspNetCore.WebUtilities
 @inject NavigationManager Nav
-@inject IJSRuntime JS
+@inject Immotech.Front.Services.AuthService Auth
 @inject Blazored.Toast.Services.IToastService Toast
 
-<p>Connexion en cours...</p>
+<div class="container mx-auto">
+    <p>Finalisation de la connexion...</p>
+</div>
 
 @code {
     protected override async Task OnInitializedAsync()
     {
-        // extract token param from query
+        // We parse the query string from the URL to find the token or an error.
         var uri = Nav.ToAbsoluteUri(Nav.Uri);
-        var queryDict = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(uri.Query);
-        queryDict.TryGetValue("token", out var tokenValues);
-        var token = tokenValues.FirstOrDefault();
+        var query = QueryHelpers.ParseQuery(uri.Query);
 
-        if (!string.IsNullOrWhiteSpace(token))
+        if (query.TryGetValue("token", out var token))
         {
-            await JS.InvokeVoidAsync("localStorage.setItem", "authToken", token);
-            Toast.ShowSuccess("Connecté");
+            // If a token is present, the login was successful.
+            // We use the AuthService to store the token and notify the application.
+            await Auth.OnLoginAsync(token!);
+            Toast.ShowSuccess("Connecté avec succès.");
             Nav.NavigateTo("/");
+        }
+        else if (query.TryGetValue("error", out var error))
+        {
+            // If an error is present, we display it to the user.
+            Toast.ShowError($"Erreur de connexion externe: {error}");
+            Nav.NavigateTo("/login");
         }
         else
         {
-            Toast.ShowError("Échec de la connexion externe");
+            // If neither a token nor an error is present, something went wrong.
+            Toast.ShowError("Une erreur inattendue est survenue lors de la connexion externe.");
             Nav.NavigateTo("/login");
         }
     }

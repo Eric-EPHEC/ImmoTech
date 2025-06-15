@@ -1,66 +1,109 @@
 ﻿@page "/"
+@inject NavigationManager Nav
 
 <PageTitle>Immotech – Accueil</PageTitle>
 
-<section class="hero d-flex flex-column align-items-center justify-content-center text-center">
-    <h1 class="display-4 mb-4">Bienvenue sur <span class="brand">Immotech</span></h1>
+<section class="hero flex flex-col items-center justify-center text-center">
+    <div class="container flex flex-col items-center">
+        <h1 class="display-4 mb-4">Bienvenue sur <span class="brand">Immotech</span></h1>
 
-    <div class="search-box shadow p-4 bg-white rounded-3">
-        <!-- Tabs -->
-        <ul class="nav nav-tabs mb-4" id="searchTabs" role="tablist">
-            <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="buy-tab" data-bs-toggle="tab" data-bs-target="#buy" type="button" role="tab">Acheter</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="rent-tab" data-bs-toggle="tab" data-bs-target="#rent" type="button" role="tab">Louer</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="estimate-tab" data-bs-toggle="tab" data-bs-target="#estimate" type="button" role="tab">Estimer</button>
-            </li>
-        </ul>
+        <div class="search-box shadow p-4 bg-white rounded-3">
+            <!-- Tabs -->
+            <ul class="nav nav-tabs mb-4" id="searchTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="buy-tab" type="button" role="tab">Acheter</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="rent-tab" type="button" disabled>Louer</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="estimate-tab" type="button" role="tab" disabled>Estimer</button>
+                </li>
+            </ul>
 
-        <!-- Tab panes (identical layout for demo) -->
-        <div class="tab-content">
-            <div class="tab-pane fade show active" id="buy" role="tabpanel" aria-labelledby="buy-tab">
-                @* Search form *@
-                <div class="mb-3 position-relative">
-                    <input class="form-control form-control-lg" placeholder="Entrez une ville ou un code postal" />
-                    <span class="search-icon"><i class="bi bi-search"></i></span>
-                </div>
-                <a href="#" class="map-link d-block mb-3"><i class="bi bi-geo-alt me-1"></i> Ou sélectionnez les villes directement sur la carte</a>
-
-                <div class="row g-2 mb-4">
-                    <div class="col-12 col-md">
-                        <select class="form-select form-select-lg">
-                            <option hidden selected>Maison</option>
-                            <option>Appartement</option>
-                            <option>Studio</option>
-                            <option>Terrain</option>
-                        </select>
+            <!-- Tab panes (identical layout for demo) -->
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="buy" role="tabpanel" aria-labelledby="buy-tab">
+                    
+                    <div class="mb-3 position-relative">
+                        <label for="search-location" class="visually-hidden">Ville ou code postal</label>
+                        <input id="search-location" class="form-control form-control-lg" placeholder="Entrez une ville ou un code postal" @bind="searchModel.Location" />
+                        <span class="search-icon"><i class="bi bi-search"></i></span>
                     </div>
-                    <div class="col-12 col-md">
-                        <select class="form-select form-select-lg">
-                            <option hidden selected>Prix</option>
-                            <option>&lt; 250 000 €</option>
-                            <option>250 000 € – 500 000 €</option>
-                            <option>&gt; 500 000 €</option>
-                        </select>
-                    </div>
-                    <div class="col-12 col-md">
-                        <button class="btn btn-outline-primary w-100 h-100 py-2"><i class="bi bi-plus-lg"></i> Plus de filtres</button>
-                    </div>
-                </div>
+                    
+                    <a href="#" class="map-link d-block mb-3"><i class="bi bi-geo-alt me-1"></i> Ou sélectionnez les villes directement sur la carte</a>
 
-                <div class="d-flex flex-column flex-md-row gap-3">
-                    <button class="btn btn-success btn-lg flex-fill">Recherche dans la liste</button>
-                    <button class="btn btn-outline-success btn-lg flex-fill">Recherche sur la carte</button>
+                    <div class="row g-2 mb-4">
+                        <div class="col-12 col-md">
+                            <label for="search-type" class="visually-hidden">Type de bien</label>
+                            <select id="search-type" class="form-select form-select-lg" @bind="searchModel.PropertyType">
+                                <option value="">Type de bien</option>
+                                <option value="Maison">Maison</option>
+                                <option value="Appartement">Appartement</option>
+                                <option value="Studio">Studio</option>
+                                <option value="Terrain">Terrain</option>
+                            </select>
+                        </div>
+                        <div class="col-12 col-md">
+                            <label for="search-price" class="visually-hidden">Prix</label>
+                             <select id="search-price" class="form-select form-select-lg" @bind="searchModel.PriceRange">
+                                <option value="">Prix</option>
+                                <option value="0-250000">&lt; 250 000 €</option>
+                                <option value="250000-500000">250 000 € – 500 000 €</option>
+                                <option value="500000-99999999">&gt; 500 000 €</option>
+                            </select>
+                        </div>
+                        <div class="col-12 col-md">
+                            <a href="/properties" class="btn btn-outline-primary w-100 h-100 py-2" style="display: flex; align-items: center; justify-content: center;"><i class="bi bi-plus-lg"></i> Plus de filtres</a>
+                        </div>
+                    </div>
+
+                    <div class="d-flex flex-column flex-md-row gap-3">
+                        <button class="btn btn-success btn-lg flex-fill" @onclick="PerformSearch">Recherche dans la liste</button>
+                        <button class="btn btn-outline-success btn-lg flex-fill" disabled>Recherche sur la carte</button>
+                    </div>
                 </div>
             </div>
-
-            @* Other tabs reuse same markup for now *@
-            <div class="tab-pane fade" id="rent" role="tabpanel" aria-labelledby="rent-tab">@* content omitted *@</div>
-            <div class="tab-pane fade" id="ia" role="tabpanel" aria-labelledby="ia-tab">@* content omitted *@</div>
-            <div class="tab-pane fade" id="estimate" role="tabpanel" aria-labelledby="estimate-tab">@* content omitted *@</div>
         </div>
     </div>
 </section>
+
+@code {
+    // This model holds the data from our search form
+    private readonly HomeSearchModel searchModel = new();
+
+    // This class defines the structure for our search data
+    private class HomeSearchModel
+    {
+        public string? Location { get; set; }
+        public string? PropertyType { get; set; }
+        public string? PriceRange { get; set; }
+    }
+
+    // This method is called when the user clicks the search button
+    private void PerformSearch()
+    {
+        // We build a query string from the search model
+        var query = new List<string>();
+        if (!string.IsNullOrWhiteSpace(searchModel.Location))
+        {
+            query.Add($"Location={Uri.EscapeDataString(searchModel.Location)}");
+        }
+        if (!string.IsNullOrWhiteSpace(searchModel.PropertyType))
+        {
+            query.Add($"PropertyType={Uri.EscapeDataString(searchModel.PropertyType)}");
+        }
+        if (!string.IsNullOrWhiteSpace(searchModel.PriceRange))
+        {
+            var parts = searchModel.PriceRange.Split('-');
+            if (parts.Length == 2)
+            {
+                query.Add($"MinPrice={parts[0]}");
+                query.Add($"MaxPrice={parts[1]}");
+            }
+        }
+        
+        // We navigate to the properties page with the search filters
+        Nav.NavigateTo($"/properties?{string.Join("&", query)}");
+    }
+}

@@ -1,53 +1,87 @@
 @page "/login"
 
 @using Blazored.Toast.Services
+@using System.Net.Http.Json
 @inject NavigationManager Nav
 @inject Immotech.Front.Services.AuthService Auth
 @inject IToastService Toast
-@inject IJSRuntime JS
+@inject HttpClient Http
 
-<h1>Connexion</h1>
-<p>Cette page est un placeholder simple pour la connexion.</p>
+<div class="container mx-auto flex flex-col items-center">
+    <h1>Connexion</h1>
+    <p>Entrez vos identifiants pour accéder à votre compte.</p>
 
-<div class="grid" style="max-width:400px">
-    <label>Email
-        <input @bind="email" type="email" />
-    </label>
+    <div class="grid" style="max-width:400px">
+        <label>Email
+            <input @bind="email" type="email" placeholder="exemple@email.com" />
+        </label>
 
-    <label>Mot de passe
-        <input @bind="password" type="password" />
-    </label>
+        <label>Mot de passe
+            <input @bind="password" type="password" />
+        </label>
 
-    <button class="contrast" @onclick="HandleLogin">Se connecter</button>
-</div>
+        <button class="contrast" @onclick="HandleLogin" disabled="@isBusy">
+            @(isBusy ? "Connexion en cours..." : "Se connecter")
+        </button>
+    </div>
 
-<p>Pas encore de compte ? <a href="/register">Créer un compte</a></p>
+    <p class="mt-2">Pas encore de compte ? <a href="/register">Créer un compte</a></p>
 
-<hr/>
-<h5>Ou se connecter avec</h5>
-<div class="grid" style="max-width:400px">
-    <!-- Social provider links call API endpoints -->
-    <a class="contrast" href="https://localhost:7261/auth/external/google">Google</a>
-    <a class="contrast" href="https://localhost:7261/auth/external/microsoft">Microsoft</a>
-    <a class="contrast" href="https://localhost:7261/auth/external/facebook">Facebook</a>
+    <hr class="w-full my-4"/>
+    <h5>Ou se connecter avec</h5>
+    <div class="grid" style="max-width:400px">
+        <!-- Social provider links call API endpoints -->
+        <a class="contrast" href="https://localhost:7261/auth/external/google">Google</a>
+        <a class="contrast" href="https://localhost:7261/auth/external/microsoft">Microsoft</a>
+        <a class="contrast" href="https://localhost:7261/auth/external/facebook">Facebook</a>
+    </div>
 </div>
 
 @code {
     private string email = string.Empty;
     private string password = string.Empty;
+    private bool isBusy;
 
+    // This method handles the login process when the user clicks the button.
     private async Task HandleLogin()
     {
-        // TODO: call real API. For now we fake success if anything typed.
-        if(string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
-        {
-            Toast.ShowError("Veuillez remplir les champs");
-            return;
-        }
+        isBusy = true;
 
-        // Store fake token in localStorage so AuthService passes next time.
-        await JS.InvokeVoidAsync("localStorage.setItem", "authToken", "dummy-token");
-        Toast.ShowSuccess("Connecté");
-        Nav.NavigateTo("/");
+        try
+        {
+            // We create the request payload for the API.
+            var request = new { Email = email, Password = password };
+            var response = await Http.PostAsJsonAsync("auth/login", request);
+
+            if (response.IsSuccessStatusCode)
+            {
+                // If the login is successful, we read the token from the response.
+                var authResponse = await response.Content.ReadFromJsonAsync<AuthResponse>();
+                if (authResponse is not null && !string.IsNullOrWhiteSpace(authResponse.Token))
+                {
+                    // We use the AuthService to handle the token and notify the app of the login.
+                    await Auth.OnLoginAsync(authResponse.Token);
+                    Toast.ShowSuccess("Connecté");
+                    Nav.NavigateTo("/");
+                }
+            }
+            else
+            {
+                // If the API returns an error, we display it to the user.
+                var error = await response.Content.ReadAsStringAsync();
+                Toast.ShowError(error ?? "Échec de la connexion");
+            }
+        }
+        catch (Exception ex)
+        {
+            Toast.ShowError($"Une erreur est survenue: {ex.Message}");
+        }
+        finally
+        {
+            isBusy = false;
+        }
     }
+
+    // This record defines the expected structure of the auth response from the API.
+    private record AuthResponse(string Token);
 } 
