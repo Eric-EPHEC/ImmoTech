@@ -5,7 +5,7 @@
 @inject HttpClient Http
 @inject IToastService Toast
 @inject NavigationManager Nav
-@inject Immotech.Front.Services.AuthService Auth
+@inject Immotech.Front.Services.TokenAuthenticationStateProvider Auth
 @inject IJSRuntime JS
 
 <AuthorizeView>
@@ -79,7 +79,7 @@
     protected override async Task OnInitializedAsync()
     {
         // ensure authenticated
-        if(!await Auth.IsAuthenticatedAsync())
+        if(!await Auth.CheckAuthenticatedAsync())
         {
             Nav.NavigateTo("/login", true);
             return;

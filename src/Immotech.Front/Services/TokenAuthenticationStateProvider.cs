@@ -138,17 +138,17 @@ namespace Immotech.Front.Services
                 // success?
                 if (result.IsSuccessStatusCode)
                 {
-                    var payload = await result.Content.ReadFromJsonAsync<FormResult>();
-                    if (payload?.Succeeded == true && !string.IsNullOrWhiteSpace(payload.Token))
+                    var payload = await result.Content.ReadFromJsonAsync<LoginResponse>();
+                    if (payload is not null && !string.IsNullOrWhiteSpace(payload.AccessToken))
                     {
-                        await _js.InvokeVoidAsync("localStorage.setItem", "authToken", payload.Token);
+                        await _js.InvokeVoidAsync("localStorage.setItem", "authToken", payload.AccessToken);
                     }
 
                     // need to refresh auth state
                     NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
 
                     // success!
-                    return new FormResult { Succeeded = true, Token = payload.Token };
+                    return new FormResult { Succeeded = true, Token = payload.AccessToken };
                 }
             }
             catch (Exception ex)

@@ -2,7 +2,7 @@
 
 @using Microsoft.AspNetCore.WebUtilities
 @inject NavigationManager Nav
-@inject Immotech.Front.Services.AuthService Auth
+@inject Immotech.Front.Services.TokenAuthenticationStateProvider Auth
 @inject Blazored.Toast.Services.IToastService Toast
 
 <div class="container mx-auto">
@@ -20,7 +20,7 @@
         {
             // If a token is present, the login was successful.
             // We use the AuthService to store the token and notify the application.
-            await Auth.OnLoginAsync(token!);
+            await Auth.LoginAsync(token!, "password");
             Toast.ShowSuccess("Connecté avec succès.");
             Nav.NavigateTo("/");
         }

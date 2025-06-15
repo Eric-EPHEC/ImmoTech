@@ -1,6 +1,6 @@
 @page "/properties/create"
 
-@inject Immotech.Front.Services.AuthService Auth
+@inject Immotech.Front.Services.TokenAuthenticationStateProvider Auth
 @inject NavigationManager Nav
 
 @* Wrapper page for create mode *@
@@ -12,7 +12,7 @@
     protected override async Task OnInitializedAsync()
     {
         // redirect to login if user not authenticated
-        if (!await Auth.IsAuthenticatedAsync())
+        if (!await Auth.CheckAuthenticatedAsync())
         {
             Nav.NavigateTo("/login", true);
         }

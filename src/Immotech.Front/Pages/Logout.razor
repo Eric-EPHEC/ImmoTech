@@ -1,6 +1,6 @@
 @page "/logout"
 
-@inject Immotech.Front.Services.AuthService Auth
+@inject Immotech.Front.Services.TokenAuthenticationStateProvider Auth
 @inject NavigationManager Nav
 
 @code {
@@ -10,7 +10,7 @@
     protected override async Task OnInitializedAsync()
     {
         // We call the logout method from the authentication service.
-        await Auth.OnLogoutAsync();
+        await Auth.LogoutAsync();
         
         // We redirect the user to the home page.
         Nav.NavigateTo("/");

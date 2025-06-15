@@ -26,25 +26,8 @@ webApplicationBuilder.Services.AddHttpContextAccessor();
 webApplicationBuilder.Services.AddScoped<ICurrentUser, CurrentUser>();
 
 // configure social login providers (Google, Microsoft, Facebook)
-webApplicationBuilder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme;
-})
-    .AddJwtBearer(o =>
-    {
-        var jwtSettings = webApplicationBuilder.Configuration.GetSection("Jwt").Get<Immotech.Api.Common.JwtSettings>();
-        o.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
-        {
-            ValidIssuer = jwtSettings.Issuer,
-            ValidAudience = jwtSettings.Audience,
-            IssuerSigningKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(jwtSettings.Key)),
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true
-        };
-    })
+webApplicationBuilder.Services.AddAuthentication()
+    
     .AddGoogle(o =>
     {
         o.ClientId = webApplicationBuilder.Configuration["Auth:Google:ClientId"]!;

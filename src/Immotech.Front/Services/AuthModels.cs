@@ -23,4 +23,17 @@ internal class RoleClaim
     public string ValueType { get; set; } = string.Empty;
     public string Issuer { get; set; } = string.Empty;
     public string OriginalIssuer { get; set; } = string.Empty;
-} 
+}
+internal class RegisterRequest
+{
+    public string Email { get; set; } = string.Empty;
+    public string Password { get; set; } = string.Empty;
+}
+
+internal class LoginResponse
+{
+    public string TokenType { get; set; } = string.Empty;
+    public string AccessToken { get; set; } = string.Empty;
+    public int ExpiresIn { get; set; }
+    public string RefreshToken { get; set; } = string.Empty;
+}
