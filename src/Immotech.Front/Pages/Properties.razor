@@ -35,6 +35,13 @@
                 <input placeholder="Prix min"    type="number" value="@minPrice?.ToString()" @oninput="e => { minPrice = string.IsNullOrWhiteSpace(e.Value?.ToString()) ? null : decimal.Parse(e.Value!.ToString()!); OnFilterChanged(); }" />
                 <input placeholder="Prix max"    type="number" value="@maxPrice?.ToString()" @oninput="e => { maxPrice = string.IsNullOrWhiteSpace(e.Value?.ToString()) ? null : decimal.Parse(e.Value!.ToString()!); OnFilterChanged(); }" />
                 <input placeholder="Chambres"    type="number" value="@minBedrooms" @oninput="e => { minBedrooms = string.IsNullOrWhiteSpace(e.Value?.ToString()) ? null : int.Parse(e.Value!.ToString()!); OnFilterChanged(); }" />
+                <select value="@propertyType" @onchange="e => { propertyType = string.IsNullOrWhiteSpace(e.Value?.ToString()) ? null : e.Value.ToString(); OnFilterChanged(); }">
+                    <option value="">--Type de bien--</option>
+                    <option value="Maison">Maison</option>
+                    <option value="Appartement">Appartement</option>
+                    <option value="Studio">Studio</option>
+                    <option value="Terrain">Terrain</option>
+                </select>
                 <select value="@status" @onchange="e => { status = string.IsNullOrWhiteSpace(e.Value?.ToString()) ? null : Enum.Parse<PropertyStatus>(e.Value!.ToString()!); OnFilterChanged(); }">
                     <option value="">--Statut--</option>
                     @foreach(var st in Enum.GetValues<PropertyStatus>())
@@ -91,6 +98,7 @@
     private int? minBedrooms;
     private PropertyStatus? status;
     private string? locationText;
+    private string? propertyType;
 
     private CancellationTokenSource? _debounceCts;
 
@@ -118,6 +126,7 @@
         if (int.TryParse(q["Bedrooms"], out var bd)) minBedrooms = bd;
         if (Enum.TryParse<PropertyStatus>(q["Status"], out var st)) status = st;
         locationText = q["Location"];
+        propertyType = q["PropertyType"];
         if (int.TryParse(q["PageNumber"], out var pn) && pn>0) pageNumber = pn;
     }
 
@@ -144,6 +153,7 @@
         if (minBedrooms.HasValue) qs.Add($"Bedrooms={minBedrooms}");
         if (status.HasValue) qs.Add($"Status={status}");
         if (!string.IsNullOrWhiteSpace(locationText)) qs.Add($"Location={Uri.EscapeDataString(locationText!)}");
+        if (!string.IsNullOrWhiteSpace(propertyType)) qs.Add($"PropertyType={Uri.EscapeDataString(propertyType!)}");
         if (pageNumber>1) qs.Add($"PageNumber={pageNumber}");
         qs.Add($"PageSize={pageSize}");
         var newUri = "/properties" + (qs.Count>0?"?"+string.Join("&",qs):"");
@@ -161,6 +171,7 @@
             if (minBedrooms.HasValue) queryString.Add($"Bedrooms={minBedrooms}");
             if (status.HasValue) queryString.Add($"Status={status}");
             if (!string.IsNullOrWhiteSpace(locationText)) queryString.Add($"Location={Uri.EscapeDataString(locationText!)}");
+            if (!string.IsNullOrWhiteSpace(propertyType)) queryString.Add($"PropertyType={Uri.EscapeDataString(propertyType!)}");
             queryString.Add($"PageNumber={pageNumber}");
             queryString.Add($"PageSize={pageSize}");
 

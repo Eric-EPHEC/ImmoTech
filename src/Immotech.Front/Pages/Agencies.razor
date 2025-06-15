@@ -9,7 +9,7 @@
 @* Agencies list *@
 <div class="container mx-auto">
     <h2 class="mb-2">Agences</h2>
-    <input placeholder="Rechercher" style="margin-bottom:0.5rem;" @bind="search" @bind:event="oninput" />
+    <input placeholder="Rechercher" style="margin-bottom:0.5rem;" value="@search" @oninput="OnSearchInput" />
 
     <LoadingOverlay IsLoading="isBusy" />
 
@@ -52,6 +52,7 @@
     private string? search;
     private List<Agency>? agencies;
     private bool isBusy;
+    private CancellationTokenSource? _debounceCts;
 
     protected override async Task OnInitializedAsync()
     {
@@ -74,9 +75,20 @@
         finally { isBusy = false; }
     }
 
-    private async Task OnSearch(ChangeEventArgs e)
+    private void OnSearchInput(ChangeEventArgs e)
     {
         search = e.Value?.ToString();
-        await LoadAsync();
+
+        _debounceCts?.Cancel();
+        _debounceCts = new CancellationTokenSource();
+        var token = _debounceCts.Token;
+
+        _ = Task.Delay(500, token).ContinueWith(async t =>
+        {
+            if (!t.IsCanceled)
+            {
+                await InvokeAsync(LoadAsync);
+            }
+        }, token);
     }
 } 
