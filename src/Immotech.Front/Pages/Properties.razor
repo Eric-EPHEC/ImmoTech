@@ -27,6 +27,26 @@ else if (properties is null || !properties.Any())
 }
 else
 {
+    @* Filter bar *@
+    <details open style="margin-bottom:1rem;">
+        <summary>Filtres</summary>
+        <div class="grid" style="grid-template-columns: repeat(auto-fill,minmax(140px,1fr));gap:0.5rem; margin-top:0.5rem;">
+            <input placeholder="Prix min"    type="number" value="@minPrice?.ToString()" @oninput="e => { minPrice = string.IsNullOrWhiteSpace(e.Value?.ToString()) ? null : decimal.Parse(e.Value!.ToString()!); OnFilterChanged(); }" />
+            <input placeholder="Prix max"    type="number" value="@maxPrice?.ToString()" @oninput="e => { maxPrice = string.IsNullOrWhiteSpace(e.Value?.ToString()) ? null : decimal.Parse(e.Value!.ToString()!); OnFilterChanged(); }" />
+            <input placeholder="Chambres"    type="number" value="@minBedrooms" @oninput="e => { minBedrooms = string.IsNullOrWhiteSpace(e.Value?.ToString()) ? null : int.Parse(e.Value!.ToString()!); OnFilterChanged(); }" />
+            <select value="@status" @onchange="e => { status = string.IsNullOrWhiteSpace(e.Value?.ToString()) ? null : Enum.Parse<PropertyStatus>(e.Value!.ToString()!); OnFilterChanged(); }">
+                <option value="">--Statut--</option>
+                @foreach(var st in Enum.GetValues<PropertyStatus>())
+                {
+                    <option value="@st" selected="@(status==st)">@st</option>
+                }
+            </select>
+            <input placeholder="Localisation" value="@locationText" @oninput="e => { locationText = e.Value?.ToString(); OnFilterChanged(); }" />
+        </div>
+    </details>
+
+
+    @* List of properties *@
     <div class="grid">
         @foreach (var property in properties)
         {
@@ -52,6 +72,15 @@ else
 }
 
 @code {
+    // filter state
+    private decimal? minPrice;
+    private decimal? maxPrice;
+    private int? minBedrooms;
+    private PropertyStatus? status;
+    private string? locationText;
+
+    private CancellationTokenSource? _debounceCts;
+
     private List<Property>? properties;
     private bool isBusy;
     private Guid _deleteId;
@@ -59,16 +88,62 @@ else
 
     protected override async Task OnInitializedAsync()
     {
+        ParseQueryString();
         await LoadDataAsync();
     }
 
-    private async Task LoadDataAsync()
+    private void ParseQueryString()//parse the query string to get the filters
+    {
+        var uri = Nav.ToAbsoluteUri(Nav.Uri);
+        var q = System.Web.HttpUtility.ParseQueryString(uri.Query);
+        if (int.TryParse(q["MinPrice"], out var mp)) minPrice = mp;
+        if (int.TryParse(q["MaxPrice"], out var xp)) maxPrice = xp;
+        if (int.TryParse(q["Bedrooms"], out var bd)) minBedrooms = bd;
+        if (Enum.TryParse<PropertyStatus>(q["Status"], out var st)) status = st;
+        locationText = q["Location"];
+    }
+
+    private void OnFilterChanged()
+    {
+        _debounceCts?.Cancel();
+        _debounceCts = new CancellationTokenSource();
+        var token = _debounceCts.Token;
+        _ = Task.Delay(500, token).ContinueWith(async t =>
+        {
+            if (!t.IsCanceled)
+            {
+                await InvokeAsync(async () => await LoadDataAsync());
+            }
+        });
+        UpdateUrl();
+    }
+
+    private void UpdateUrl()//update the url with the filters
+    {
+        var qs = new List<string>();
+        if (minPrice.HasValue) qs.Add($"MinPrice={minPrice}");
+        if (maxPrice.HasValue) qs.Add($"MaxPrice={maxPrice}");
+        if (minBedrooms.HasValue) qs.Add($"Bedrooms={minBedrooms}");
+        if (status.HasValue) qs.Add($"Status={status}");
+        if (!string.IsNullOrWhiteSpace(locationText)) qs.Add($"Location={Uri.EscapeDataString(locationText!)}");
+        var newUri = "/properties" + (qs.Count>0?"?"+string.Join("&",qs):"");
+        Nav.NavigateTo(newUri, replace:true);
+    }
+
+    private async Task LoadDataAsync()//load the data from the api
     {
         try
         {
             isBusy = true;
-            // get list from API
-            var response = await Http.GetFromJsonAsync<PropertyListResponse>("property");
+            var queryString = new List<string>();
+            if (minPrice.HasValue) queryString.Add($"MinPrice={minPrice}");
+            if (maxPrice.HasValue) queryString.Add($"MaxPrice={maxPrice}");
+            if (minBedrooms.HasValue) queryString.Add($"Bedrooms={minBedrooms}");
+            if (status.HasValue) queryString.Add($"Status={status}");
+            if (!string.IsNullOrWhiteSpace(locationText)) queryString.Add($"Location={Uri.EscapeDataString(locationText!)}");
+
+            var endpoint = "property" + (queryString.Count>0?"?"+string.Join("&",queryString):"");
+            var response = await Http.GetFromJsonAsync<PropertyListResponse>(endpoint);
             properties = response?.Properties ?? new List<Property>();
         }
         catch(Exception ex)

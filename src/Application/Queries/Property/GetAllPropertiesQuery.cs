@@ -13,6 +13,10 @@ namespace Application.Queries.Property
         public string? Location { get; set; }
         public PropertyStatus? Status { get; set; }
         public int? AgencyId { get; set; }
+
+        // pagination
+        public int PageNumber { get; set; } = 1; // 1-based index
+        public int PageSize { get; set; } = 12;  // items per page
     }
 
     public class GetAllPropertiesResponse
@@ -78,7 +82,11 @@ namespace Application.Queries.Property
                 query = query.Where(p => p.AgencyId == request.AgencyId.Value);
             }
             //Possiblité d'améliorer les performances du filtre en utilisant du full text search.
+            var totalCount = await query.CountAsync(cancellationToken);
+
             var properties = await query
+                .Skip((request.PageNumber - 1) * request.PageSize)
+                .Take(request.PageSize)
                 .Select(p => new GetAllPropertiesResponseItem
                 {
                     Id = p.Id,
@@ -100,7 +108,7 @@ namespace Application.Queries.Property
             return new GetAllPropertiesResponse
             {
                 Properties = properties,
-                TotalCount = properties.Count
+                TotalCount = totalCount
             };
         }
     }
