@@ -1,6 +1,7 @@
 @using Immotech.Front.Models
 @using Blazored.Toast.Services
 @using Immotech.Front.Components
+@using System.Net.Http.Json
 @inject HttpClient Http
 @inject IToastService Toast
 @inject NavigationManager Nav
@@ -30,6 +31,16 @@
         <div>
             <label>Surface (m²)</label>
             <input type="number" @bind="model.SurfaceArea" />
+        </div>
+        <div>
+            <label>Agence</label>
+            <select @bind="model.AgencyId">
+                <option value="">--Aucune--</option>
+                @foreach(var ag in agencyOptions)
+                {
+                    <option value="@ag.Id">@ag.Name</option>
+                }
+            </select>
         </div>
         <div>
             <label>Rue</label>
@@ -67,10 +78,18 @@
     private readonly PropertyUpsertModel model = new();
     private EditContext? editCtx;
     private bool isBusy;
+    private List<Agency> agencyOptions = [];
 
     protected override async Task OnInitializedAsync()
     {
         editCtx = new EditContext(model);
+
+        // load agencies for dropdown
+        try
+        {
+            agencyOptions = (await Http.GetFromJsonAsync<AgencyListResponse>("agency"))?.Agencies ?? [];
+        }
+        catch { /* ignore */ }
 
         if (Id.HasValue && Id != Guid.Empty)
         {
@@ -113,14 +132,26 @@
         try
         {
             isBusy = true;
+            var payload = new
+            {
+                model.Title,
+                model.Description,
+                Address = new { Street = model.Street, City = model.City, State = model.State, ZipCode = model.ZipCode },
+                model.Location,
+                Price = (decimal)model.Price,
+                model.Bedrooms,
+                model.SurfaceArea,
+                model.AgencyId
+            };
+
             if (model.Id is null)
             {
-                await Http.PostAsJsonAsync("property", model);
+                await Http.PostAsJsonAsync("property", payload);
                 Toast.ShowSuccess("Bien créé");
             }
             else
             {
-                await Http.PutAsJsonAsync($"property/{model.Id}", model);
+                await Http.PutAsJsonAsync($"property/{model.Id}", payload);
                 Toast.ShowSuccess("Bien mis à jour");
             }
             Nav.NavigateTo("/properties");
