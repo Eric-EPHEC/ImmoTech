@@ -69,6 +69,13 @@ else
             </article>
         }
     </div>
+
+    @* Pagination *@
+    <nav style="margin-top:1rem; display:flex; gap:0.5rem; justify-content:center;">
+        <button class="secondary" disabled="@(pageNumber==1)" @onclick="() => ChangePage(-1)">Précédent</button>
+        <span>Page @pageNumber / @((int)Math.Ceiling(totalCount/(double)pageSize))</span>
+        <button class="secondary" disabled="@(pageNumber*pageSize>=totalCount)" @onclick="() => ChangePage(1)">Suivant</button>
+    </nav>
 }
 
 @code {
@@ -86,6 +93,10 @@ else
     private Guid _deleteId;
     private ConfirmDialog? confirmDeleteDlg;
 
+    private int pageNumber = 1;
+    private const int pageSize = 12;
+    private int totalCount;
+
     protected override async Task OnInitializedAsync()
     {
         ParseQueryString();
@@ -101,6 +112,7 @@ else
         if (int.TryParse(q["Bedrooms"], out var bd)) minBedrooms = bd;
         if (Enum.TryParse<PropertyStatus>(q["Status"], out var st)) status = st;
         locationText = q["Location"];
+        if (int.TryParse(q["PageNumber"], out var pn) && pn>0) pageNumber = pn;
     }
 
     private void OnFilterChanged()
@@ -126,6 +138,8 @@ else
         if (minBedrooms.HasValue) qs.Add($"Bedrooms={minBedrooms}");
         if (status.HasValue) qs.Add($"Status={status}");
         if (!string.IsNullOrWhiteSpace(locationText)) qs.Add($"Location={Uri.EscapeDataString(locationText!)}");
+        if (pageNumber>1) qs.Add($"PageNumber={pageNumber}");
+        qs.Add($"PageSize={pageSize}");
         var newUri = "/properties" + (qs.Count>0?"?"+string.Join("&",qs):"");
         Nav.NavigateTo(newUri, replace:true);
     }
@@ -141,10 +155,13 @@ else
             if (minBedrooms.HasValue) queryString.Add($"Bedrooms={minBedrooms}");
             if (status.HasValue) queryString.Add($"Status={status}");
             if (!string.IsNullOrWhiteSpace(locationText)) queryString.Add($"Location={Uri.EscapeDataString(locationText!)}");
+            queryString.Add($"PageNumber={pageNumber}");
+            queryString.Add($"PageSize={pageSize}");
 
             var endpoint = "property" + (queryString.Count>0?"?"+string.Join("&",queryString):"");
             var response = await Http.GetFromJsonAsync<PropertyListResponse>(endpoint);
             properties = response?.Properties ?? new List<Property>();
+            totalCount = response?.TotalCount ?? 0;
         }
         catch(Exception ex)
         {
@@ -191,5 +208,14 @@ else
     private static string? GetMainPhoto(Property prop)
     {
         return prop.Photos?.FirstOrDefault(p => p.IsMain)?.Url ?? prop.Photos?.FirstOrDefault()?.Url;
+    }
+
+    private async Task ChangePage(int delta)
+    {
+        var newPage = pageNumber + delta;
+        if (newPage < 1) return;
+        pageNumber = newPage;
+        UpdateUrl();
+        await LoadDataAsync();
     }
 } 
