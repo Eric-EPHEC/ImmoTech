@@ -7,7 +7,7 @@
 @inject NavigationManager Nav
 
 @* Form for creating or editing a property *@
-<EditForm Model="model" EditContext="editCtx" OnValidSubmit="SaveAsync">
+<EditForm Model="model" OnValidSubmit="SaveAsync">
     <DataAnnotationsValidator />
     <ValidationErrors />
 
@@ -76,14 +76,11 @@
     [Parameter] public Guid? Id { get; set; }
 
     private readonly PropertyUpsertModel model = new();
-    private EditContext? editCtx;
     private bool isBusy;
     private List<Agency> agencyOptions = [];
 
     protected override async Task OnInitializedAsync()
     {
-        editCtx = new EditContext(model);
-
         // load agencies for dropdown
         try
         {

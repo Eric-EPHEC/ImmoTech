@@ -1,0 +1,42 @@
+@page "/login"
+
+@using Blazored.Toast.Services
+@inject NavigationManager Nav
+@inject Immotech.Front.Services.AuthService Auth
+@inject IToastService Toast
+@inject IJSRuntime JS
+
+<h1>Connexion</h1>
+<p>Cette page est un placeholder simple pour la connexion.</p>
+
+<div class="grid" style="max-width:400px">
+    <label>Email
+        <input @bind="email" type="email" />
+    </label>
+
+    <label>Mot de passe
+        <input @bind="password" type="password" />
+    </label>
+
+    <button class="contrast" @onclick="Login">Se connecter</button>
+</div>
+
+@code {
+    private string email = string.Empty;
+    private string password = string.Empty;
+
+    private async Task Login()
+    {
+        // TODO: call real API. For now we fake success if anything typed.
+        if(string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
+        {
+            Toast.ShowError("Veuillez remplir les champs");
+            return;
+        }
+
+        // Store fake token in localStorage so AuthService passes next time.
+        await JS.InvokeVoidAsync("localStorage.setItem", "authToken", "dummy-token");
+        Toast.ShowSuccess("Connecté");
+        Nav.NavigateTo("/");
+    }
+} 
