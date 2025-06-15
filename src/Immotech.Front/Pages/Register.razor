@@ -4,7 +4,7 @@
 @using System.Net.Http.Json
 @inject HttpClient Http
 @inject NavigationManager Nav
-@inject IJSRuntime JS
+@inject Immotech.Front.Services.AuthService Auth
 @inject Blazored.Toast.Services.IToastService Toast
 
 <div class="container mx-auto flex flex-col items-center">
@@ -45,9 +45,9 @@
             }
 
             var payload = await res.Content.ReadFromJsonAsync<AuthResponse>();
-            if (payload is not null)
+            if (payload is not null && !string.IsNullOrWhiteSpace(payload.Token))
             {
-                await JS.InvokeVoidAsync("localStorage.setItem", "authToken", payload.Token);
+                await Auth.OnLoginAsync(payload.Token);
                 Toast.ShowSuccess("Compte créé et connecté");
                 Nav.NavigateTo("/");
             }

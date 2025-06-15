@@ -33,7 +33,7 @@ public class AuthService
     }
 
     // This method is called to log the user out.
-    public async Task LogoutAsync()
+    public async Task OnLogoutAsync()
     {
         // We remove the token from local storage.
         await _js.InvokeVoidAsync("localStorage.removeItem", "authToken");

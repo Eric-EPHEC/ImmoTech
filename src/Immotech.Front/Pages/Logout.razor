@@ -1,21 +1,18 @@
 @page "/logout"
 
-@inject NavigationManager Nav
 @inject Immotech.Front.Services.AuthService Auth
-@inject IJSRuntime JS
-@inject Blazored.Toast.Services.IToastService Toast
-
-<div class="container mx-auto">
-    <p>Déconnexion...</p>
-</div>
+@inject NavigationManager Nav
 
 @code {
+    /// <summary>
+    /// This method is executed when the page is initialized.
+    /// </summary>
     protected override async Task OnInitializedAsync()
     {
-        await Auth.LogoutAsync();
-        Toast.ShowSuccess("Déconnecté");
-        // small delay for UX
-        await Task.Delay(300);
+        // We call the logout method from the authentication service.
+        await Auth.OnLogoutAsync();
+        
+        // We redirect the user to the home page.
         Nav.NavigateTo("/");
     }
 } 
