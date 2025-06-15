@@ -13,16 +13,6 @@ public class FormResult
 internal class UserInfo
 {
     public string Email { get; set; } = string.Empty;
-    public Dictionary<string,string> Claims { get; set; } = new();
-}
-
-internal class RoleClaim
-{
-    public string Type { get; set; } = string.Empty;
-    public string Value { get; set; } = string.Empty;
-    public string ValueType { get; set; } = string.Empty;
-    public string Issuer { get; set; } = string.Empty;
-    public string OriginalIssuer { get; set; } = string.Empty;
 }
 internal class RegisterRequest
 {

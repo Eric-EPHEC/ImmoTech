@@ -3,9 +3,10 @@
 @using Immotech.Front.Models
 @using Immotech.Front.Services
 @using System.Net.Http.Json
+@using Microsoft.AspNetCore.Components.Authorization
 @inject HttpClient Http
 @inject NavigationManager Nav
-@inject TokenAuthenticationStateProvider Auth
+@inject AuthenticationStateProvider Auth
 @inject Blazored.Toast.Services.IToastService Toast
 
 <div class="container mx-auto flex flex-col items-center">
@@ -34,7 +35,7 @@
     {
         try
         {
-            var res = await Auth.RegisterAsync(model.Email, model.Password);
+            var res = await ((TokenAuthenticationStateProvider)Auth).RegisterAsync(model.Email, model.Password);
             if (!res.Succeeded)
             {
                 Toast.ShowError($"Erreur: {string.Join(", ", res.ErrorList)}");

@@ -199,35 +199,9 @@ namespace Immotech.Front.Services
                         new(ClaimTypes.Name, userInfo.Email),
                         new(ClaimTypes.Email, userInfo.Email),
                     };
+                   
 
-                    // add any additional claims
-                    claims.AddRange(
-                        userInfo.Claims.Where(c => c.Key != ClaimTypes.Name && c.Key != ClaimTypes.Email)
-                            .Select(c => new Claim(c.Key, c.Value)));
-
-                    // request the roles endpoint for the user's roles
-                    using var rolesResponse = await _http.GetAsync("roles");
-
-                    // throw if request fails
-                    rolesResponse.EnsureSuccessStatusCode();
-
-                    // read the response into a string
-                    var rolesJson = await rolesResponse.Content.ReadAsStringAsync();
-
-                    // deserialize the roles string into an array
-                    var roles = JsonSerializer.Deserialize<RoleClaim[]>(rolesJson, jsonSerializerOptions);
-
-                    // add any roles to the claims collection
-                    if (roles?.Length > 0)
-                    {
-                        foreach (var role in roles)
-                        {
-                            if (!string.IsNullOrEmpty(role.Type) && !string.IsNullOrEmpty(role.Value))
-                            {
-                                claims.Add(new Claim(role.Type, role.Value, role.ValueType, role.Issuer, role.OriginalIssuer));
-                            }
-                        }
-                    }
+                   
 
                     // set the principal
                     var id = new ClaimsIdentity(claims, nameof(TokenAuthenticationStateProvider));
